@@ -1,4 +1,4 @@
-#define max(a,b) a>b?a:b
+ #define max(a,b) a>b?a:b
 int lengthOfLongestSubstring(char *s){
     int start = 0, idx = 0, ret = 0, map[128];
     memset(map, -1, sizeof(map));
