@@ -5,7 +5,6 @@
  *     struct ListNode *next;
  * };
  */
-
 struct ListNode *newNode(int val){
     struct ListNode *ret = (struct ListNode*)malloc(sizeof(struct ListNode));
     ret->val = val, ret->next = NULL;
