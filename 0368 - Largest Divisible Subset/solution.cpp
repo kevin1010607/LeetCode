@@ -3,7 +3,7 @@ public:
     vector<int> largestDivisibleSubset(vector<int>& nums) {
         int n = nums.size();
         sort(nums.begin(), nums.end());
-        vector<int> dp(n), nxt(n), res;
+        vector<int> dp(n), nxt(n);
         int m{}, idx{};
         for(int i = n-1; i >= 0; i--){
             int cnt{}, id{};
@@ -15,9 +15,10 @@ public:
             dp[i] = 1+cnt, nxt[i] = id;
             if(dp[i] > m) m = dp[i], idx = i;
         }
-        while(true){
-            res.push_back(nums[idx]);
-            if(dp[idx] == 1) break;
+        vector<int> res(dp[idx]);
+        int k = dp[idx];
+        for(int i = 0; i < k; i++){
+            res[i] = nums[idx];
             idx = nxt[idx];
         }
         return res;
