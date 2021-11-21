@@ -244,3 +244,52 @@ public:
     }
 };
 
+class Solution {
+public:
+    int maxDistance(vector<int>& colors) {
+        int res = 0;
+        for(int i = 0; i < colors.size(); i++){
+            for(int j = i+1; j < colors.size(); j++){
+                if(colors[i] != colors[j]) res = max(res, j-i);
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int wateringPlants(vector<int>& plants, int capacity) {
+        int res = 0, now = capacity;
+        for(int i = 0; i < plants.size(); i++){
+            if(now >= plants[i]){
+                now -= plants[i];
+                res++;
+            }
+            else{
+                res += (i+i+1);
+                now = capacity-plants[i];
+            }
+        }
+        return res;
+    }
+};
+
+class RangeFreqQuery {
+public:
+    vector<pair<int, int>> v;
+    RangeFreqQuery(vector<int>& arr) {
+        for(int i = 0; i < arr.size(); i++){
+            v.emplace_back(arr[i], i);
+        }
+        sort(v.begin(), v.end());
+    }
+    
+    int query(int left, int right, int value) {
+        pair<int, int> p1 = make_pair(value, left), p2 = make_pair(value, right);
+        auto l = lower_bound(v.begin(), v.end(), p1);
+        auto r = upper_bound(v.begin(), v.end(), p2);
+        return r-l;
+    }
+};
+
