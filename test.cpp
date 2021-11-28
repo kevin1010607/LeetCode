@@ -293,3 +293,154 @@ public:
     }
 };
 
+class Solution {
+public:
+    int countWords(vector<string>& words1, vector<string>& words2) {
+        map<string, int> a, b;
+        set<string> st;
+        for(auto &s : words1) {a[s]++; st.insert(s);}
+        for(auto &s : words2) {b[s]++; st.insert(s);}
+        int res = 0;
+        for(auto &s : st){
+            if(a[s] == 1 && b[s] == 1) res++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int minimumBuckets(string s) {
+        int n = s.size();
+        int res = 0;
+        if(s[0] == 'H'){
+            if(n==1 || s[1]=='H') return -1;
+            s[1] = 'B';
+        }
+        for(int i = 1; i < n-1; i++){
+            if(s[i] != 'H' ||s[i-1] == 'B') continue;
+            if(s[i+1] == 'H' && s[i-1] == 'H') return -1;
+            if(s[i+1] == 'H' && s[i-1] == '.') s[i-1] = 'B';
+            else s[i+1] = 'B';
+        }
+        if(s[n-1]=='H'){
+            if(s[n-2] == 'H') return -1;
+            else s[n-2] = 'B';
+        }
+        for(int i = 0; i < n; i++) if(s[i] == 'B') res++;
+        cout << s << endl;
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int minCost(vector<int>& sP, vector<int>& hP, vector<int>& rowC, vector<int>& colC) {
+        int res(0);
+        if(sP[0] <= hP[0]) for(int i = sP[0]+1; i <= hP[0] ; i++) res += rowC[i];
+        else for(int i = hP[0]; i < sP[0]; i++) res += rowC[i];
+        if(sP[1] <= hP[1]) for(int i = sP[1]+1; i <= hP[1] ; i++) res += colC[i];
+        else for(int i = hP[1]; i < sP[1]; i++) res += colC[i];
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> targetIndices(vector<int>& nums, int target) {
+        sort(nums.begin(), nums.end());
+        vector<int> res;
+        int idx = 0;
+        for(auto i : nums){
+            if(i == target) res.push_back(idx);
+            idx++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> getAverages(vector<int>& nums, int k) {
+        int n = nums.size();
+        vector<long long> dp(n+1);
+        dp[0] = 0;
+        for(int i = 1; i < n+1; i++){
+            dp[i] = dp[i-1]+nums[i-1];
+        }
+        vector<int> res(n);
+        for(int i = 0; i < n; i++){
+            if(i-k<0 || i+k>=n) res[i] = -1;
+            else res[i] = (dp[i+k+1]-dp[i-k])/(2*k+1);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int minimumDeletions(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 1) return 1;
+        int ma(INT_MIN), mi(INT_MAX), i1(-1), i2(-1);
+        for(int i = 0; i < n; i++){
+            if(nums[i] > ma) ma = nums[i], i1 = i;
+            if(nums[i] < mi) mi = nums[i], i2 = i;
+        }
+        cout << i1 << " " << i2 << "\n";
+        return min(min(max(i1+1,i2+1), max(n-i1, n-i2)), min(i1+1, n-i1)+min(i2+1, n-i2));
+    }
+};
+
+class Solution {
+public:
+    vector<int> findAllPeople(int n, vector<vector<int>>& meet, int first) {
+        ios_base::sync_with_stdio(0);
+        cin.tie(0);
+        vector<bool> known(n, false);
+        auto cmp = [](vector<int>& a, vector<int>& b){return a[2]<b[2];};
+        sort(meet.begin(), meet.end(), cmp);
+        known[0] = known[first] = true;
+        vector<set<vector<int>>> tmp;
+        int pre = -1, idx = 0;
+        for(int i = 0; i < meet.size(); i++){
+            if(meet[i][2] == pre) tmp[idx-1].insert(meet[i]);
+            else {tmp.push_back(set<vector<int>> {meet[i]}); idx++;}
+            pre = meet[i][2];
+        }
+        /*for(auto v1 : tmp){
+            for(auto v2: v1){
+                for(auto v3 : v2){
+                    cout << v3 << " ";
+                }
+                cout << "|";
+            }
+            cout << "\n";
+        }
+        cout << "\n";*/
+        
+        for(auto& v1: tmp){
+            //vector<int> k;
+            while(true){
+                int flag = 1;
+                set<vector<int>> ss;
+                for(auto& v2 : v1){
+                    if(known[v2[0]]==true && known[v2[1]]==true) ss.insert(v2);
+                    if(known[v2[0]]==true || known[v2[1]]==true){
+                        if(known[v2[0]]==false || known[v2[1]]==false) flag = 0;
+                        known[v2[0]] = known[v2[1]] = true;
+                    }
+                }
+                for(auto& vv : ss) v1.erase(vv);
+                if(flag == 1) break;
+            }
+            
+            //for(auto i : k) known[i] = true;
+        }
+        
+        vector<int> res;
+        for(int i = 0; i < n; i++) if(known[i] == true) res.push_back(i);
+        return res;
+    }
+};
+
