@@ -444,3 +444,100 @@ public:
     }
 };
 
+class Solution {
+public:
+    vector<int> findEvenNumbers(vector<int>& digits) {
+        vector<int> res;
+        set<int> ss;
+        int n = digits.size();
+        for(int i = 0; i < n; i++){
+            if(digits[i] == 0) continue;
+            for(int j = 0; j < n; j++){
+                if(i == j) continue;
+                for(int k = 0; k < n; k++){
+                    if(k == i || k == j) continue;
+                    if(digits[k]%2) continue;
+                    int s = 100*digits[i]+10*digits[j]+digits[k];
+                    ss.insert(s);
+                }
+            }
+        }
+        for(auto i : ss) res.push_back(i);
+        return res;
+    }
+};
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteMiddle(ListNode* head) {
+        if(!head->next) return nullptr;
+        ListNode *now = head;
+        int len = 0;
+        while(now){
+            now = now->next;
+            len++;
+        }
+        len  = len/2-1;
+        now = head;
+        while(len--) now = now->next;
+        ListNode *tmp = now->next;
+        now->next = tmp->next;
+        delete tmp;
+        return head;
+    }
+};
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int find(TreeNode *root, int val, vector<char>& s){
+        if(!root) return 0;
+        if(root->val == val) return 1;
+        s.push_back('L');
+        int a = find(root->left, val, s);
+        if(a) return 1;
+        s.pop_back();
+        s.push_back('R');
+        int b = find(root->right, val, s);
+        if(b) return 1;
+        s.pop_back();
+        return {};
+    }
+    string getDirections(TreeNode* root, int v1, int v2) {
+        vector<char> vv1, vv2;
+        find(root, v1, vv1);
+        find(root, v2, vv2);
+        int n = vv1.size(), m = vv2.size();
+        int idx = 0;
+        while((idx<n&&idx<m) && vv1[idx]==vv2[idx]) idx++;
+        string s1 = "", s2 = "";
+        for(int i = 0; i < n-idx; i++) s1 += "U";
+        for(int i = idx; i < m; i++){
+            if(vv2[i] == 'L') s2 += "L";
+            else s2 += "R";
+        }
+        s1 += s2;
+        return s1;
+    }
+};
+
