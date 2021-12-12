@@ -541,3 +541,146 @@ public:
     }
 };
 
+class Solution {
+public:
+    vector<int> maxSubsequence(vector<int>& nums, int k) {
+        vector<int> res, tmp(nums);
+        for(int i = 0; i < k; i++){
+            int M = INT_MIN, id = -1;
+            for(int j = 0; j < tmp.size(); j++){
+                if(M < tmp[j]) M = tmp[j], id = j;
+            }
+            tmp[id] = INT_MIN;
+        }
+        for(int i = 0; i < tmp.size(); i++){
+            if(tmp[i] == INT_MIN) res.push_back(nums[i]);
+        }
+        return res;
+    }
+};
+
+
+class Solution {
+public:
+    vector<int> goodDaysToRobBank(vector<int>& s, int t) {
+        int n = s.size();
+        vector<int> dp1(n, 0), dp2(n, 0), res;
+        int last = 0;
+        for(int i = 1; i < n; i++){
+            if(s[i]<=s[i-1]) last++;
+            else last = 0;
+            dp1[i] = last;
+        }
+        last = 0;
+        for(int i = n-2; i >= 0; i--){
+            if(s[i]<=s[i+1]) last++;
+            else last = 0;
+            dp2[i] = last;
+        }
+        for(int i = 0; i < n; i++){
+            if(dp1[i]>=t && dp2[i]>=t) res.push_back(i);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    bool connect(vector<int>& a, vector<int>& b){
+        long long a0 = a[0], a1 = a[1], a2 = a[2], b0 = b[0], b1 = b[1], b2 = b[2];
+        long long rr = (b0-a0)*(b0-a0)+(b1-a1)*(b1-a1);
+        long long r = a2*a2;
+        return r >= rr;
+    }
+    int dfs(int id, vector<vector<int>>& b, vector<bool>& used){
+        used[id] = true;
+        int res = 1;
+        for(int i = 0; i < b.size(); i++){
+            if(used[i]) continue;
+            if(connect(b[id], b[i])){
+                res += dfs(i, b, used);
+            }
+        }
+        return res;
+    }
+    int maximumDetonation(vector<vector<int>>& b) {
+        int n = b.size(), res = 0;
+        for(int i = 0; i < n; i++){
+            vector<bool> used(n, false);
+            res = max(res, dfs(i, b, used));
+            cout << res << i << endl;
+        }
+        return res;
+    }
+};
+
+class SORTracker {
+public:
+    set<pair<int, string>> s;
+    set<pair<int, string>>::iterator it;
+    SORTracker() {}
+    void add(string name, int score) {
+        auto [newit, b] = s.insert({-score, name});
+        if(s.size() == 1) it = s.begin();
+        else if(*newit < *it) advance(it, -1);
+    }
+    string get() {
+        string res = (*it).second;
+        advance(it, 1);
+        return res;
+    }
+};
+
+/**
+ * Your SORTracker object will be instantiated and called as such:
+ * SORTracker* obj = new SORTracker();
+ * obj->add(name,score);
+ * string param_2 = obj->get();
+ */
+
+class Solution {
+public:
+    int countPoints(string rings) {
+        vector<int> r(10), g(10), b(10);
+        for(int i = 0; i < rings.size(); i+=2){
+            if(rings[i] == 'R') r[rings[i+1]-'0']++;
+            if(rings[i] == 'G') g[rings[i+1]-'0']++;
+            if(rings[i] == 'B') b[rings[i+1]-'0']++;
+        }
+        int res = 0;
+        for(int i = 0; i < 10; i++){
+            if(r[i]>0 && g[i]>0 && b[i]>0) res++;
+        }
+        return res;
+    }
+};
+
+
+
+class Solution {
+public:
+    bool plant(int& now, int c, int p){
+        if(now >= p){
+            now -= p;
+            return false;
+        }
+        else{
+            now = c-p;
+            return true; 
+        }
+    }
+    int minimumRefill(vector<int>& p, int cA, int cB) {
+        int i = 0, j = p.size()-1, res = 0;
+        int nowa = cA, nowb = cB;
+        while(i < j){
+            if(plant(nowa, cA, p[i])) res++;
+            if(plant(nowb, cB, p[j])) res++;
+            i++, j--;
+        }
+        if(i == j){
+            if(nowa >= nowb) {if(plant(nowa, cA, p[i])) res++;}
+            else if(plant(nowb, cB, p[i])) res++;
+        }
+        return res;
+    }
+};
