@@ -15,8 +15,8 @@ public:
         for(; head; head = head->next) v.push_back(head);
         auto cmp = [](ListNode *l, ListNode *r) {return l->val<r->val;};
         sort(v.begin(), v.end(), cmp);
-        for(auto it = v.begin(), nxt = it+1; nxt != v.end(); it++, nxt++)
-            (*it)->next = *nxt;
+        for(auto it = v.begin(); it+1 != v.end(); it++)
+            (*it)->next = *(it+1);
         v.back()->next = nullptr;
         return v.front();
     }
