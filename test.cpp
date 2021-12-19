@@ -684,3 +684,67 @@ public:
         return res;
     }
 };
+
+class Solution {
+public:
+    string firstPalindrome(vector<string>& words) {
+        for(auto& s : words){
+            int l = 0, r = s.size()-1;
+            bool flag = true;
+            while(l < r){
+                if(s[l] != s[r]) {flag = false; break;}
+                l++, r--;
+            }
+            if(flag) return s;
+        }
+        return "";
+    }
+};
+
+class Solution {
+public:
+    string addSpaces(string s, vector<int>& spaces) {
+        string res;
+        int start = 0;
+        if(spaces[0] == 0) res += " ", start++;
+        int next = start==spaces.size()?s.size():spaces[start];
+        res += s.substr(0, next);
+        for(int i = start; i < spaces.size(); i++){
+            res += " ";
+            int next = i==spaces.size()-1?s.size():spaces[i+1];
+            res += s.substr(spaces[i], next-spaces[i]);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long getDescentPeriods(vector<int>& prices) {
+        long long res = 1, cnt = 1;
+        for(int i = 1; i < prices.size(); i++){
+            cnt = prices[i]==prices[i-1]-1?cnt+1:1;
+            res += cnt;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int kIncreasing(vector<int>& arr, int k) {
+        int res = 0;
+        for(int i = 0; i < k; i++){
+            int len = 1;
+            vector<int> v{arr[i]};
+            for(int j = i+k; j < arr.size(); j += k){
+                auto pos = upper_bound(v.begin(), v.end(), arr[j]);
+                if(pos == v.end()) v.push_back(arr[j]);
+                else *pos = arr[j];
+                len++;
+            }
+            res += len-v.size();
+        }
+        return res;
+    }
+};
