@@ -1,8 +1,8 @@
 class Solution {
 public:
-    bool isPowerOfFour(int n) {
+    bool isPowerOfThree(int n) {
         if(n <= 0) return false;
-        while(n%4 == 0) n /= 4;
+        while(n%3 == 0) n /= 3;
         return n == 1;
     }
 };
