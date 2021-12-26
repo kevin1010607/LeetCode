@@ -748,3 +748,57 @@ public:
         return res;
     }
 };
+
+class Solution {
+public:
+    bool isSameAfterReversals(int num) {
+        return num==0 || num%10!=0;
+    }
+};
+
+class Solution {
+public:
+    vector<int> executeInstructions(int n, vector<int>& startPos, string s) {
+        vector<int> res;
+        static int dx[] = {1,0,-1,0}, dy[] = {0,1,0,-1};
+        static char c[] = {'D','R','U','L'};
+        for(int i = 0; i < s.size(); i++){
+            int x = startPos[0], y = startPos[1], cnt = 0;
+            for(int j = i; j < s.size(); j++){
+                for(int i = 0; i < 4; i++) if(s[j] == c[i]) x += dx[i], y += dy[i];
+                if(x<0||x>=n||y<0||y>=n) break;
+                cnt++;
+            }
+            res.push_back(cnt);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<long long> getDistances(vector<int>& arr) {
+        vector<vector<int>> v(100005);
+        for(int i = 0; i < arr.size(); i++){
+            v[arr[i]].push_back(i);
+        }
+        vector<bool> flag(100005, false);
+        vector<vector<long long>> pre(100005);
+        vector<long long> res(arr.size(), 0);
+        for(int i = 0; i < arr.size(); i++){
+            if(!flag[arr[i]]){
+                pre[arr[i]].push_back(v[arr[i]][0]);
+                for(int j = 1; j < v[arr[i]].size(); j++){
+                    pre[arr[i]].push_back(pre[arr[i]][j-1]+v[arr[i]][j]);
+                }
+                flag[arr[i]] = true;
+            }
+            auto a = lower_bound(v[arr[i]].begin(), v[arr[i]].end(), i);
+            long long l = a-v[arr[i]].begin(), r = (v[arr[i]].end()-a)-1;
+            long long aa = l*i-(l==0?0:pre[arr[i]][l-1]);
+            long long bb = (pre[arr[i]][pre[arr[i]].size()-1]-pre[arr[i]][l])-r*i;
+            res[i] = aa+bb;
+        }
+        return res;
+    }
+};
