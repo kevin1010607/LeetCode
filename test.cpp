@@ -802,3 +802,45 @@ public:
         return res;
     }
 };
+
+
+class Solution {
+public:
+    bool checkString(string s) {
+        for(int i = 0; i < s.size()-1; i++){
+            if(s[i]=='b' && s[i+1]=='a') return false;
+        }
+        return true;
+    }
+};
+
+class Solution {
+public:
+    int numberOfBeams(vector<string>& bank) {
+        bool first = true;
+        int pre = 0, res = 0;
+        for(auto& s : bank){
+            int cnt = 0;
+            for(auto c : s) if(c == '1') cnt++;
+            if(cnt == 0) continue;
+            if(first) pre = cnt, first = false;
+            else res += pre*cnt, pre = cnt;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    bool asteroidsDestroyed(int mass, vector<int>& a) {
+        sort(a.begin(), a.end());
+        long long tmp = mass;
+        for(auto i : a){
+            if(tmp >= i) tmp += i;
+            else return false;
+        }
+        return true;
+    }
+};
+
+
