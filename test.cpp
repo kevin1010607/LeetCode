@@ -844,3 +844,171 @@ public:
 };
 
 
+class Solution {
+public:
+    string capitalizeTitle(string title) {
+        for(auto& c : title) if(c>='A'&&c<='Z') c = c-'A'+'a';
+        if(title.size()<3) return title;
+        if(title[0]!=' '&&title[1]!=' '&&title[2]!=' ')
+            title[0] = title[0]-'a'+'A';
+        for(int i = 0; i < title.size()-3; i++){
+            if(title[i]==' '&&title[i+1]!=' '&&title[i+2]!=' '&&title[i+3]!=' ')
+                title[i+1] = title[i+1]-'a'+'A';
+        }
+        return title;
+    }
+};
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    int pairSum(ListNode* head) {
+        vector<int> v(1, head->val);
+        ListNode *slow = head, *fast = head;
+        while(fast->next && fast->next->next){
+            slow = slow->next;
+            fast = fast->next->next;
+            v.push_back(slow->val);
+        }
+        int res = 0, idx = v.size()-1;
+        while(slow->next){
+            slow = slow->next;
+            res = max(res, v[idx--]+slow->val);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int longestPalindrome(vector<string>& words) {
+        int t[26][26] = {};
+        for(auto& s : words) t[s[0]-'a'][s[1]-'a']++;
+        int p = 0, res = 0, flag = 0;
+        for(int i = 0; i < 26; i++){
+            for(int j = i+1; j < 26; j++){
+                p += min(t[i][j], t[j][i]);
+            }
+        }
+        for(int i = 0; i < 26; i++){
+            p += t[i][i]/2;
+            if(t[i][i]%2) flag = 1;
+        }
+        return p*4+flag*2;
+    }
+};
+
+
+class Solution {
+public:
+    bool possibleToStamp(vector<vector<int>>& grid, int H, int W) {
+        int m = grid.size(), n = grid[0].size();
+        vector<vector<int>> dp(m+1, vector<int>(n+1)), v(m+2, vector<int>(n+2));
+        for(int i = 1; i <= m; i++){
+            for(int j = 1; j <= n; j++){
+                dp[i][j] = dp[i][j-1]+dp[i-1][j]-dp[i-1][j-1]+grid[i-1][j-1];
+            }
+        }
+        for(int i = 1; i <= m-H+1; i++){
+            for(int j = 1; j <= n-W+1; j++){
+                if(grid[i-1][j-1] == 1) continue;
+                int now = dp[i+H-1][j+W-1]-dp[i+H-1][j-1]-dp[i-1][j+W-1]+dp[i-1][j-1];
+                if(now == 0) v[i][j]++, v[i][j+W]--, v[i+H][j]--, v[i+H][j+W]++;
+            }
+        }
+        for(int i = 1; i <= m; i++){
+            for(int j = 1; j <= n; j++){
+                v[i][j] += v[i][j-1]+v[i-1][j]-v[i-1][j-1];
+                if(v[i][j]==0 && grid[i-1][j-1] == 0) return false;
+            }
+        }
+        return true;
+    }
+};
+
+class Solution {
+public:
+    bool checkValid(vector<vector<int>>& matrix) {
+        int m = matrix.size(), n = matrix.size();
+        int v1[105][105] = {}, v2[105][105] = {};   
+        for(int i = 0; i < m; i++){
+            for(int j = 0; j < n; j++){
+                if(++v1[i][matrix[i][j]] > 1) return false;
+                if(++v2[j][matrix[i][j]] > 1) return false;
+            }
+        }
+        return true;
+    }
+};
+
+class Solution {
+public:
+    int minSwaps(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> v(n+1);
+        for(int i = 1; i <= n; i++) v[i] = v[i-1]+nums[i-1];
+        int t = v[n], M = 0;
+        for(int i = 1; i <= n; i++){
+            if(i <= n-t+1) M = max(M, v[i+t-1]-v[i-1]);
+            else M = max(M, v[n]-v[i-1]+v[t-(n-i+1)]);
+        }
+        
+        return t-M;
+    }
+};
+
+class Solution {
+public:
+    int ss(bitset<26> b){
+        int res = 0;
+        for(int i = 0; i < 26; i++) res |= (b[i]<<i);
+        return res;
+    }
+    int wordCount(vector<string>& sW, vector<string>& tW) {
+        int n = sW.size(), res = 0;
+        bitset<100000000> b;
+        for(auto& s : sW){
+            bitset<26> now;
+            for(auto c : s) now[c-'a'] = 1;
+            for(int i = 0; i < 26; i++){
+                bitset<26> tmp(now);
+                if(now[i] == 0) tmp[i] = 1, b[ss(tmp)] = 1;
+            }
+        }
+        for(auto&s : tW){
+            int tmp = 0;
+            for(auto c : s) tmp |= (1<<(c-'a'));
+            if(b[tmp] == 1) res++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int earliestFullBloom(vector<int>& pT, vector<int>& gT) {
+        int n = pT.size(), res = 0, total = -1;
+        vector<pair<int, int>> v(n);
+        for(int i = 0; i < n; i++){
+            total += pT[i];
+            v[i].first = gT[i];
+            v[i].second = pT[i];
+        }
+        sort(v.begin(), v.end());
+        for(int i = 0; i < n; i++){
+            res = max(res, total+v[i].first+1);
+            total -= v[i].second;
+        }
+        return res;
+    }
+};
+
