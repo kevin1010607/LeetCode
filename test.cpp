@@ -1012,3 +1012,76 @@ public:
     }
 };
 
+class Solution {
+public:
+    int countElements(vector<int>& nums) {
+        map<int, int> m;
+        int ma = INT_MIN, mi = INT_MAX;
+        for(auto i : nums) m[i]++, ma = max(ma, i), mi = min(mi, i);
+        int res = 0;
+        for(auto it = m.begin(); it != m.end(); it++){
+            if((*it).first==ma || (*it).first==mi) continue;
+            res += (*it).second;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> rearrangeArray(vector<int>& nums) {
+        int idx1 = 0, idx2 = 1;
+        vector<int> res(nums.size());
+        for(int i = 0; i < nums.size(); i++){
+            if(nums[i] > 0) res[idx1] = nums[i], idx1 += 2;
+            if(nums[i] < 0) res[idx2] = nums[i], idx2 += 2;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> findLonely(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<int> res;
+        for(int i = 0; i < nums.size(); i++){
+            int a = i==0?(-1e7):nums[i-1];
+            int b = i==nums.size()-1?(1e7):nums[i+1];
+            if(nums[i]-a>1 && b-nums[i]>1) res.push_back(nums[i]);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int maximumGood(vector<vector<int>>& statements) {
+        int res = 0, n = statements.size(), s = pow(2, n);
+        for(int i = 0; i < s; i++){
+            bool flag = true;
+            int cnt = 0;
+            vector<int> tmp(n);
+            for(int j = 0; j < n; j++){
+                tmp[j] = ((1<<j)&i)>>j;
+                if(tmp[j] == 1) cnt++;
+            }
+            for(int x = 0; x < n; x++){
+                for(int y = 0; y < n; y++){
+                    if(statements[x][y] == 2) continue;
+                    if(statements[x][y] == 0){
+                        if(tmp[x]==1 && tmp[y]==1) {flag = false; break;}
+                    }
+                    if(statements[x][y] == 1){
+                        if(tmp[x]==1 && tmp[y]==0) {flag = false; break;}
+                    }
+                }
+                if(!flag) break;
+            }
+            
+            if(flag) res = max(res, cnt);
+        }
+        return res;
+    }
+};
+

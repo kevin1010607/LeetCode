@@ -1,18 +1,26 @@
-0028
-0084
-0085
-0106
-0131
-0210
-0300
-0310
-0394
-0721
-0973
-1044
-1178
-1286
+// Done
+0001 unordered_map
+0155 stack
+0994 queue
 
+// Undone
+0028 c, cpp // strStr
+0084 c // stack
+0085 c // stack
+0131 c // 3d vector
+0210 c // queue
+0212 c, cpp // search
+0300 c, cpp // LIS
+0310 c // queue
+0394 c // string
+0721 c // unordered_map, unordered_set
+0973 c // nth_element
+1044 c // unordered_set
+1178 c // unordered_map
+1286 c // string
+1345 c // queue, unordered_map
+
+// Test
 2053
 2054
 2055
