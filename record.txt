@@ -5,8 +5,6 @@
 
 // Undone
 0028 c, cpp // strStr
-0084 c // stack
-0085 c // stack
 0131 c // 3d vector
 0210 c // queue
 0212 c, cpp // search
