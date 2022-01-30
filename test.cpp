@@ -1085,3 +1085,94 @@ public:
     }
 };
 
+class Solution {
+public:
+    int findFinalValue(vector<int>& nums, int o) {
+        sort(nums.begin(), nums.end());
+        for(auto i : nums){
+            if(i == o) o *= 2;
+        }
+        return o;
+    }
+};
+
+class Solution {
+public:
+    vector<int> maxScoreIndices(vector<int>& nums) {
+        int n = nums.size(), M = -1;
+        vector<int> dp(n+1), res;
+        for(int i = 1; i <= n; i++) dp[i] = dp[i-1]+nums[i-1];
+        for(int i = 0; i <= n; i++){
+            int now = (i-dp[i])+(dp[n]-dp[i]);
+            if(now == M) res.push_back(i);
+            else if(now > M) {res.clear(); res.push_back(i); M = now;}
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    string subStrHash(string s, int p, int m, int k, int h) {
+        long long now = 0, pp = 1;
+        vector<int> res(s.size()-k+1);
+        for(int i = s.size()-k; i < s.size(); i++){
+            now = (now+(s[i]-'a'+1)*pp)%m;
+            if(i != s.size()-1) pp = (pp*p)%m;
+        }
+        res[s.size()-k] = now;
+        for(int i = s.size()-k-1; i >= 0; i--){
+            now = (now-((s[i+k]-'a'+1)*pp)%m+m)%m;
+            now = (now*p)%m;
+            now = (now+(s[i]-'a'+1))%m;
+            res[i] = now;
+        }
+        for(int i = 0; i < res.size(); i++){
+            if(res[i] == h) return s.substr(i, k);
+        }
+        return "";
+    }
+};
+
+class Solution {
+private:
+    unordered_map<int, int> um;
+    unordered_set<int> us;
+    int hash(string& s){
+        int res = 0;
+        for(auto c : s) res |= (1<<(c-'a'));
+        return res;
+    }
+    int dfs(int val){
+        us.insert(val);
+        int res = um[val];
+        for(int i = 0; i < 26; i++){
+            int h = val^(1<<i);
+            if(us.count(h) || !um.count(h)) continue;
+            res += dfs(h);
+        }
+        for(int i = 0; i < 26; i++){
+            if(!(val&(1<<i))) continue;
+            int now = val^(1<<i);
+            for(int j = 0; j < 26; j++){
+                if(now&(1<<j)) continue;
+                int h = now^(1<<j);
+                if(us.count(h) || !um.count(h)) continue;
+                res += dfs(h);
+            }
+        }
+        return res;
+    }
+public:
+    vector<int> groupStrings(vector<string>& words) {
+        vector<int> res(2);
+        for(auto& s : words) um[hash(s)]++;
+        for(auto&[v, n] : um){
+            if(us.count(v)) continue;
+            res[1] = max(res[1], dfs(v));
+            res[0]++;
+        }
+        return res;
+    }
+};
+
