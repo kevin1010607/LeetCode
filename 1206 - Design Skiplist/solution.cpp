@@ -24,7 +24,7 @@ public:
         }
         bool flag = true;
         ListNode *down = nullptr;
-        for(int i = v.size()-1; i >= 0 && flag; i--, flag = rand()&1){
+        for(int i = v.size()-1; i>=0 && flag; i--, flag = rand()&1){
             down = v[i]->next = new ListNode(num, v[i]->next, down);
         }
         if(flag) head = new ListNode(0, new ListNode(num, nullptr, down), head);
@@ -35,7 +35,7 @@ public:
             for(; now->next && now->next->val<num; now = now->next);
             if(now->next && now->next->val==num){
                 res = true;
-                ListNode *tmp = now->next;
+                auto *tmp = now->next;
                 now->next = tmp->next;
                 delete tmp;
             }
