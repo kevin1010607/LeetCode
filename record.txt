@@ -1,6 +1,5 @@
 // Done
 0001 unordered_map
-0155 stack
 0994 queue
 
 // Undone
