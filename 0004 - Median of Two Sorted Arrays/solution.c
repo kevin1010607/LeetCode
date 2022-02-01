@@ -1,11 +1,13 @@
-int nextNum(int *nums1, int nums1Size, int *nums2, int nums2Size, int *idx1, int *idx2){
-    if(*idx1<nums1Size && *idx2<nums2Size) return nums1[*idx1]<nums2[*idx2]?nums1[(*idx1)++]:nums2[(*idx2)++];
-    else return *idx1<nums1Size?nums1[(*idx1)++]:nums2[(*idx2)++];
+#define min(a,b) (((a)<(b))?(a):(b))
+int getKth(int *nums1, int m, int *nums2, int n, int k){
+    if(m > n) return getKth(nums2, n, nums1, m, k);
+    if(m == 0) return nums2[k-1];
+    if(k == 1) return min(nums1[0], nums2[0]);
+    int i = min(m, k/2), j = min(n, k/2);
+    if(nums1[i-1] < nums2[j-1]) return getKth(nums1+i, m-i, nums2, n, k-i);
+    else return getKth(nums1, m, nums2+j, n-j, k-j);
 }
 double findMedianSortedArrays(int* nums1, int nums1Size, int* nums2, int nums2Size){
-    int mid = (nums1Size+nums2Size-1)/2, odd = (nums1Size+nums2Size)%2, idx1 = 0, idx2 = 0, s1 = 0, s2 = 0;
-    while(mid--) nextNum(nums1, nums1Size, nums2, nums2Size, &idx1, &idx2);
-    s1 = nextNum(nums1, nums1Size, nums2, nums2Size, &idx1, &idx2);
-    if(!odd) s2 = nextNum(nums1, nums1Size, nums2, nums2Size, &idx1, &idx2);
-    return (odd?(double)s1:(double)(s1+s2)/2);
+    int m = nums1Size, n = nums2Size, l = (m+n+1)/2, r = (m+n+2)/2;
+    return (getKth(nums1, m, nums2, n, l)+getKth(nums1, m, nums2, n, r))/2.0;
 }

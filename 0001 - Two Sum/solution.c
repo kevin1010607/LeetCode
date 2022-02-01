@@ -1,39 +1,58 @@
 /**
  * Note: The returned array must be malloced, assume caller calls free().
  */
-#define SIZE 100
 typedef struct _node{
     int key, val;
     struct _node *next;
 }Node;
-Node *newNode(int key, int val, Node* next){
-    Node *ret = (Node*)malloc(sizeof(Node));
-    ret->key = key, ret->val = val, ret->next = next;
-    return ret;
+typedef struct{
+    int size;
+    Node **table;
+}Map;
+Node *newNode(int key, int val, Node *next){
+    Node *res = (Node*)malloc(sizeof(Node));
+    res->key = key, res->val = val, res->next = next;
+    return res;
 }
-void insert(Node **map, int key, int val){
-    int hash = abs(key)%SIZE;
-    Node *n = newNode(key, val, map[hash]);
-    map[hash] = n;
+Map *newMap(int size){
+    Map *res = (Map*)malloc(sizeof(Map));
+    res->size = size;
+    res->table = (Node**)calloc(size, sizeof(Node*));
+    return res;
 }
-Node* find(Node **map, int key){
-    int hash = abs(key)%SIZE;
-    Node *now = map[hash];
-    while(now){
-        if(now->key == key) return now;
-        now = now->next;
+void mapInsert(Map *m, int key, int val){
+    int h = abs(key)%m->size;
+    m->table[h] = newNode(key, val, m->table[h]);
+}
+Node *mapFind(Map *m, int key){
+    int h = abs(key)%m->size;
+    Node *res = m->table[h];
+    while(res){
+        if(res->key == key) return res;
+        res = res->next;
     }
     return NULL;
 }
-int* twoSum(int* nums, int numsSize, int target, int* returnSize){
-    *returnSize = 2;
-    int *ret = (int*)malloc(sizeof(int)*2);
-    Node* map[SIZE];
-    for(int i = 0; i < SIZE; i++) map[i] == NULL;
-    for(int i = 0; i < numsSize; i++){
-        Node *f = find(map, target-nums[i]);
-        if(f) {ret[0] = i, ret[1] = f->val; break;}
-        else insert(map, nums[i], i);
+void mapFree(Map *m){
+    for(int i = 0; i < m->size; i++){
+        while(m->table[i]){
+            Node *tmp = m->table[i];
+            m->table[i] = tmp->next;
+            free(tmp);
+        }
     }
-    return ret;
+    free(m->table);
+    free(m);
+}
+int* twoSum(int* nums, int numsSize, int target, int* returnSize){
+    Map *map = newMap(100);
+    int *res = (int*)malloc(2*sizeof(int));
+    *returnSize = 2;
+    for(int i = 0; i < numsSize; i++){
+        Node *now = mapFind(map, nums[i]);
+        if(now != NULL) {res[0] = i, res[1] = now->val; break;}
+        else mapInsert(map, target-nums[i], i);
+    }
+    mapFree(map);
+    return res;
 }

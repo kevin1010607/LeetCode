@@ -1,14 +1,19 @@
 class Solution {
 public:
-    int nextNum(vector<int>& nums1, vector<int>& nums2, int& idx1, int& idx2){
-        if(idx1<nums1.size() && idx2<nums2.size()) return nums1[idx1]<nums2[idx2]?nums1[idx1++]:nums2[idx2++];
-        else return idx1<nums1.size()?nums1[idx1++]:nums2[idx2++];
-    }
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
-        int mid = (nums1.size()+nums2.size()-1)/2, odd = (nums1.size()+nums2.size())%2, idx1 = 0, idx2 = 0, s1 = 0, s2 = 0;
-        while(mid--) nextNum(nums1, nums2, idx1, idx2);
-        s1 = nextNum(nums1, nums2, idx1, idx2);
-        if(!odd) s2 = nextNum(nums1, nums2, idx1, idx2);
-        return odd?(double)s1:(double)(s1+s2)/2;
+        int n1 = nums1.size(), n2 = nums2.size();
+        if(n1 > n2) return findMedianSortedArrays(nums2, nums1);
+        int l = 0, r = 2*n1;
+        while(l <= r){
+            int mid1 = l+(r-l)/2, mid2 = n1+n2-mid1;
+            int l1 = mid1==0?INT_MIN:nums1[(mid1-1)/2];
+            int l2 = mid2==0?INT_MIN:nums2[(mid2-1)/2];
+            int r1 = mid1==2*n1?INT_MAX:nums1[mid1/2];
+            int r2 = mid2==2*n2?INT_MAX:nums2[mid2/2];
+            if(l2 > r1) l = mid1+1;
+            else if(l1 > r2) r = mid1-1;
+            else return (max(l1, l2)+min(r1, r2))/2.0;
+        }
+        return -1;
     }
 };

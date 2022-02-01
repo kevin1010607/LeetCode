@@ -1,12 +1,10 @@
-#define max(a,b) a>b?a:b
-int lengthOfLongestSubstring(char *s){
-    int start = 0, idx = 0, ret = 0, map[128];
-    memset(map, -1, sizeof(map));
-    while(s[idx]){
-        if(map[s[idx]] != -1) start = max(map[s[idx]]+1, start);
-        ret = max(ret, idx-start+1);
-        map[s[idx]] = idx;
-        idx++;
+#define max(a,b) (((a)>(b))?(a):(b))
+int lengthOfLongestSubstring(char * s){
+    int res = 0, start = 0, m[128];
+    memset(m, 0xff, sizeof(m));
+    for(int i = 0; s[i]; i++){
+        if(m[s[i]] != -1) start = max(start, m[s[i]]+1);
+        res = max(res, i-start+1), m[s[i]] = i;
     }
-    return ret;
+    return res;
 }
