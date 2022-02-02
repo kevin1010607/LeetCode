@@ -20,11 +20,11 @@ Map *newMap(int size){
     res->table = (Node**)calloc(size, sizeof(Node*));
     return res;
 }
-void mapInsert(Map *m, int key, int val){
+void insert(Map *m, int key, int val){
     int h = abs(key)%m->size;
     m->table[h] = newNode(key, val, m->table[h]);
 }
-Node *mapFind(Map *m, int key){
+Node* find(Map *m, int key){
     int h = abs(key)%m->size;
     Node *res = m->table[h];
     while(res){
@@ -33,7 +33,7 @@ Node *mapFind(Map *m, int key){
     }
     return NULL;
 }
-void mapFree(Map *m){
+void freeMap(Map *m){
     for(int i = 0; i < m->size; i++){
         while(m->table[i]){
             Node *tmp = m->table[i];
@@ -49,10 +49,10 @@ int* twoSum(int* nums, int numsSize, int target, int* returnSize){
     int *res = (int*)malloc(2*sizeof(int));
     *returnSize = 2;
     for(int i = 0; i < numsSize; i++){
-        Node *now = mapFind(map, nums[i]);
+        Node *now = find(map, nums[i]);
         if(now != NULL) {res[0] = i, res[1] = now->val; break;}
-        else mapInsert(map, target-nums[i], i);
+        else insert(map, target-nums[i], i);
     }
-    mapFree(map);
+    freeMap(map);
     return res;
 }
