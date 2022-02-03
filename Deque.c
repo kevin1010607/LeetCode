@@ -62,20 +62,3 @@ void freeDeque(Deque *dq){
     free(dq->a);
     free(dq);
 }
-
-/**
- * Note: The returned array must be malloced, assume caller calls free().
- */
-int* maxSlidingWindow(int* nums, int numsSize, int k, int* returnSize){
-    int *res = (int*)malloc((numsSize-k+1)*sizeof(int));
-    *returnSize = numsSize-k+1;
-    Deque *dq = newDeque(k);
-    for(int i = 0; i < numsSize; i++){
-        if(!empty(dq) && front(dq) == i-k) pop_front(dq);
-        while(!empty(dq) && nums[back(dq)]<nums[i]) pop_back(dq);
-        push_back(dq, i);
-        if(i >= k-1) res[i-(k-1)] = nums[front(dq)];
-    }
-    freeDeque(dq);
-    return res;
-}

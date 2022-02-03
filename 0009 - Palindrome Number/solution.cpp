@@ -1,8 +1,9 @@
 class Solution {
 public:
     bool isPalindrome(int x) {
-        long long ret = 0, tmp = x;
-        while(tmp > 0) ret = 10*ret+tmp%10, tmp /= 10;
-        return ret == x;
+        if(x<0 ||(x>0&&x%10==0)) return false;
+        int res = 0;
+        while(x > res) res = 10*res+x%10, x /= 10;
+        return res==x || res/10==x;
     }
 };

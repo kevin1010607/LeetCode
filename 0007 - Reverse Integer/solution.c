@@ -1,11 +1,8 @@
-#define INT_MAX 2147483647
-#define INT_MIN -2147483648
 int reverse(int x){
-    int ret = 0;
+    int res = 0;
     while(x){
-        if(ret>INT_MAX/10 || ret<INT_MIN/10) return 0;
-        ret = 10*ret+x%10;
-        x /= 10;
+        if(res>INT_MAX/10 || res<INT_MIN/10) return 0;
+        res = 10*res+x%10, x /= 10;
     }
-    return ret;
+    return res;
 }

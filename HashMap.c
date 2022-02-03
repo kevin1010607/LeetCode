@@ -67,19 +67,3 @@ void freeHashMap(HashMap *m){
     free(m->table);
     free(m);
 }
-
-/**
- * Note: The returned array must be malloced, assume caller calls free().
- */
-int* twoSum(int* nums, int numsSize, int target, int* returnSize){
-    HashMap *m = newHashMap(numsSize);
-    int *res = (int*)malloc(2*sizeof(int));
-    *returnSize = 2;
-    for(int i = 0; i < numsSize; i++){
-        Node *now = find(m, nums[i]);
-        if(now) {res[0] = i, res[1] = now->val; break;}
-        else modifyByVal(m, target-nums[i], i);
-    }
-    freeHashMap(m);
-    return res;
-}

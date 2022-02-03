@@ -68,18 +68,11 @@ void freeHashMap(HashMap *m){
     free(m);
 }
 
-/**
- * Note: The returned array must be malloced, assume caller calls free().
- */
-int* twoSum(int* nums, int numsSize, int target, int* returnSize){
-    HashMap *m = newHashMap(numsSize);
-    int *res = (int*)malloc(2*sizeof(int));
-    *returnSize = 2;
-    for(int i = 0; i < numsSize; i++){
-        Node *now = find(m, nums[i]);
-        if(now) {res[0] = i, res[1] = now->val; break;}
-        else modifyByVal(m, target-nums[i], i);
-    }
+int fourSumCount(int* nums1, int nums1Size, int* nums2, int nums2Size, int* nums3, int nums3Size, int* nums4, int nums4Size){
+    int res = 0, n = nums1Size;
+    HashMap *m = newHashMap(n);
+    for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) modifyByAdd(m, nums1[i]+nums2[j], 1);
+    for(int i = 0; i < n; i++) for(int j = 0; j < n; j++) res += getVal(m, -nums3[i]-nums4[j]);
     freeHashMap(m);
     return res;
 }
