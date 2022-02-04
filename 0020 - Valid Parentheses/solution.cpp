@@ -1,14 +1,17 @@
 class Solution {
 public:
     bool isValid(string s) {
-        stack<char> S;
+        stack<char> sk;
         for(auto c : s){
-            if(c=='(' || c=='[' || c=='{') S.push(c);
-            else{
-                if(S.empty() || !(c-S.top()==2||c-S.top()==1)) return false;
-                S.pop();
+            switch(c){
+                case '(': sk.push(')'); break;
+                case '{': sk.push('}'); break;
+                case '[': sk.push(']'); break;
+                default:
+                    if(sk.empty() || c!=sk.top()) return false;
+                    else sk.pop();
             }
         }
-        return S.empty();
+        return sk.empty();
     }
 };

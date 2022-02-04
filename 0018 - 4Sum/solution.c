@@ -109,29 +109,37 @@ void freeVector2d(Vector2d *v){
  * Note: Both returned array and *columnSizes array must be malloced, assume caller calls free().
  */
 int cmp(const void *a, const void *b) {return *(const int*)a-*(const int*)b;}
-int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes){
+int** fourSum(int* nums, int numsSize, int target, int* returnSize, int** returnColumnSizes){
     int n = numsSize;
-    Vector2d *v = newVector2d(0, 105, 0, 3, 0);
+    Vector2d *v = newVector2d(0, 105, 0, 4, 0);
     qsort(nums, n, sizeof(int), cmp);
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < n-3; i++){
         if(i>0 && nums[i]==nums[i-1]) continue;
-        int l = i+1, r = n-1;
-        while(l < r){
-            int L = nums[l], R = nums[r], s = nums[i]+L+R;
-            if(s == 0){
-                pushBack(v);
-                pushRowBack(v, getSize(v)-1, nums[i]);
-                pushRowBack(v, getSize(v)-1, L);
-                pushRowBack(v, getSize(v)-1, R);
-                while(l<r && nums[l]==L) l++;
-                while(l<r && nums[r]==R) r--;
+        if((long long)nums[i]+nums[i+1]+nums[i+2]+nums[i+3] > target) break;
+        if((long long)nums[i]+nums[n-1]+nums[n-2]+nums[n-3] < target) continue;
+        for(int j = i+1; j < n-2; j++){
+            if(j>i+1 && nums[j]==nums[j-1]) continue;
+            if((long long)nums[i]+nums[j]+nums[j+1]+nums[j+2] > target) break;
+            if((long long)nums[i]+nums[j]+nums[n-1]+nums[n-2] < target) continue;
+            int l = j+1, r = n-1;
+            while(l < r){
+                long long s = (long long)nums[i]+nums[j]+nums[l]+nums[r];
+                if(s == target){
+                    pushBack(v);
+                    pushRowBack(v, getSize(v)-1, nums[i]);
+                    pushRowBack(v, getSize(v)-1, nums[j]);
+                    pushRowBack(v, getSize(v)-1, nums[l]);
+                    pushRowBack(v, getSize(v)-1, nums[r]);
+                    do{l++;}while(l<r && nums[l]==nums[l-1]);
+                    do{r--;}while(l<r && nums[r]==nums[r+1]);
+                }
+                else s<target?(l++):(r--);
             }
-            else s<0?(l++):(r--);
         }
     }
     int **res = getArray(v);
     *returnColumnSizes = getArraySize(v);
     *returnSize = getSize(v);
-    // freeVector2d(v);
+    // FreeVector2d(v);
     return res;
 }

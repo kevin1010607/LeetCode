@@ -102,36 +102,3 @@ void freeVector2d(Vector2d *v){
     free(v->rcp);
     free(v);
 }
-
-/**
- * Return an array of arrays of size *returnSize.
- * The sizes of the arrays are returned as *returnColumnSizes array.
- * Note: Both returned array and *columnSizes array must be malloced, assume caller calls free().
- */
-int cmp(const void *a, const void *b) {return *(const int*)a-*(const int*)b;}
-int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes){
-    int n = numsSize;
-    Vector2d *v = newVector2d(0, 105, 0, 3, 0);
-    qsort(nums, n, sizeof(int), cmp);
-    for(int i = 0; i < n; i++){
-        if(i>0 && nums[i]==nums[i-1]) continue;
-        int l = i+1, r = n-1;
-        while(l < r){
-            int L = nums[l], R = nums[r], s = nums[i]+L+R;
-            if(s == 0){
-                pushBack(v);
-                pushRowBack(v, getSize(v)-1, nums[i]);
-                pushRowBack(v, getSize(v)-1, L);
-                pushRowBack(v, getSize(v)-1, R);
-                while(l<r && nums[l]==L) l++;
-                while(l<r && nums[r]==R) r--;
-            }
-            else s<0?(l++):(r--);
-        }
-    }
-    int **res = getArray(v);
-    *returnColumnSizes = getArraySize(v);
-    *returnSize = getSize(v);
-    // freeVector2d(v);
-    return res;
-}

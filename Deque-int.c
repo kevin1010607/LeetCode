@@ -6,10 +6,10 @@ Deque* newDeque(int);
 void doubleSize(Deque*);
 bool full(Deque*);
 bool empty(Deque*);
-void push_back(Deque*, int);
-void push_front(Deque*, int);
-void pop_back(Deque*);
-void pop_front(Deque*);
+void pushBack(Deque*, int);
+void pushFront(Deque*, int);
+void popBack(Deque*);
+void popFront(Deque*);
 int front(Deque*);
 int back(Deque*);
 void freeDeque(Deque*);
@@ -36,20 +36,20 @@ bool full(Deque *dq){
 bool empty(Deque *dq){
     return dq->front==dq->rear;
 }
-void push_back(Deque *dq, int val){
+void pushBack(Deque *dq, int val){
     if(full(dq)) doubleSize(dq);
     dq->rear = (dq->rear+1)%dq->cp;
     dq->a[dq->rear] = val;
 }
-void push_front(Deque *dq, int val){
+void pushFront(Deque *dq, int val){
     if(full(dq)) doubleSize(dq);
     dq->a[dq->front] = val;
     dq->front = (dq->front-1+dq->cp)%dq->cp;
 }
-void pop_back(Deque *dq){
+void popBack(Deque *dq){
     dq->rear = (dq->rear-1+dq->cp)%dq->cp;
 }
-void pop_front(Deque *dq){
+void popFront(Deque *dq){
     dq->front = (dq->front+1)%dq->cp;
 }
 int front(Deque *dq){

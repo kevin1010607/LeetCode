@@ -1,16 +1,8 @@
 bool isMatch(char * s, char * p){
-    int i, j;
-    bool dp[21][31] = {};
-    dp[0][0] = true;
-    for(j = 1; p[j-1]; j++) if(p[j-1] == '*') dp[0][j] = dp[0][j-2];
-    for(i = 1; s[i-1]; i++){
-        for(j = 1; p[j-1]; j++){
-            if(p[j-1] == '*'){
-                if(p[j-2]=='.' || p[j-2]==s[i-1]) dp[i][j] = dp[i][j-2]||dp[i-1][j];
-                else dp[i][j] = dp[i][j-2];
-            }
-            else if(p[j-1]=='.' || p[j-1]==s[i-1]) dp[i][j] = dp[i-1][j-1];
-        }
+    for(char c = *p; c; s++, c = *p){
+        if(*(p+1) != '*') p++;
+        else if (isMatch(s, p+2)) return true;
+        if(!*s || (c!='.'&&c!=*s)) return false;
     }
-    return dp[i-1][j-1];
+    return !*s;
 }

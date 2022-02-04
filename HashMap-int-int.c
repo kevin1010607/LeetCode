@@ -8,15 +8,15 @@ typedef struct{
 }HashMap;
 
 Node* newNode(int, int, Node*);
-HashMap *newHashMap(int);
-Node *find(HashMap*, int);
+HashMap* newHashMap(int);
+Node* find(HashMap*, int);
 void insert(HashMap*, int, int);
 int getVal(HashMap*, int);
 void modifyByAdd(HashMap*, int, int);
 void modifyByVal(HashMap*, int, int);
 void freeHashMap(HashMap*);
 
-Node *newNode(int key, int val, Node *next){
+Node* newNode(int key, int val, Node *next){
     Node *res = (Node*)malloc(sizeof(Node));
     res->key = key, res->val = val, res->next = next;
     return res;
@@ -27,7 +27,7 @@ HashMap* newHashMap(int size){
     res->table = (Node**)calloc(size, sizeof(Node*));
     return res;
 }
-Node *find(HashMap *m, int key){
+Node* find(HashMap *m, int key){
     int h = abs(key)%m->size;
     Node *res = m->table[h];
     while(res){

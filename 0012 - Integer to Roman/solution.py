@@ -4,8 +4,11 @@ class Solution:
         while num:
             id = (num%10)*p
             while id:
-                if id in t: res, id = t[id]+res, 0
-                elif id+p in t: res, id = t[p]+t[id+p]+res, 0
-                else: res, id = t[p]+res, id-p
+                if id in t:
+                    res, id = t[id]+res, 0
+                elif id+p in t:
+                    res, id = t[p]+t[id+p]+res, 0
+                else:
+                    res, id = t[p]+res, id-p
             num, p = num//10, p*10
         return res

@@ -47,20 +47,3 @@ void freeStack(Stack *s){
     free(s->a);
     free(s);
 }
-
-bool isValid(char * s){
-    Stack *sk = newStack(10);
-    for(int i = 0; s[i]; i++){
-        switch(s[i]){
-            case '(': push(sk, ')'); break;
-            case '{': push(sk, '}'); break;
-            case '[': push(sk, ']'); break;
-            default:
-                if(empty(sk) || s[i]!=top(sk)) return false;
-                else pop(sk);
-        }
-    }
-    bool res = empty(sk);
-    freeStack(sk);
-    return res;
-}

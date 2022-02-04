@@ -4,5 +4,6 @@ class Solution:
         res = t[s[0]]
         for i in range(1, len(s)):
             res += t[s[i]]
-            if t[s[i]]>t[s[i-1]]: res -= 2*t[s[i-1]]
+            if t[s[i]] > t[s[i-1]]:
+                res -= 2*t[s[i-1]]
         return res
