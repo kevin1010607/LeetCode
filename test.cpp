@@ -1176,3 +1176,92 @@ public:
     }
 };
 
+class Solution {
+public:
+    int minimumSum(int num) {
+        vector<int> a(4);
+        for(int i = 0; i < 4; i++) a[i] = num%10, num /= 10;
+        sort(a.begin(), a.end());
+        int p = a[0]*10+a[3], q = a[1]*10+a[2];
+        return p+q;
+    }
+};
+
+class Solution {
+public:
+    vector<int> pivotArray(vector<int>& nums, int pivot) {
+        int l = 0, e = 0, r = 0;
+        vector<int> res(nums.size());
+        for(auto i : nums){
+            if(i < pivot) l++;
+            else if(i == pivot) e++;
+            else r++;
+        }
+        int i1 = 0, i2 = i1+l, i3 = i2+e;
+        for(auto i : nums){
+            if(i < pivot) res[i1++] = i;
+            else if(i == pivot) res[i2++] = i;
+            else res[i3++] = i;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int minCostSetTime(int startAt, int mC, int pC, int tS) {
+        vector<int> v;
+        if(tS < 6000){
+            int m = tS/60, s = tS%60;
+            v.push_back(m*100+s);
+            if(s<=39 && m>=1) v.push_back((m-1)*100+s+60);
+        }
+        else{
+            int m = 99, s = tS-99*60;
+            v.push_back(m*100+s);
+        }
+        int res = INT_MAX;
+        for(auto i : v){
+            string ss = to_string(i);
+            int now = ss.size()*pC;
+            if(startAt != (ss[0]-'0')) now += mC;
+            char cc = ss[0];
+            for(int i = 1; i < ss.size(); i++){
+                if(ss[i] != cc) now += mC;
+                cc = ss[i];
+            }
+            res = min(res, now);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long minimumDifference(vector<int>& nums) {
+        priority_queue<int> L;
+        priority_queue<int, vector<int>, greater<int>> R;
+        long long n = nums.size(), N = n/3, l = 0, r = 0, res = LLONG_MAX;
+        vector<long long> v(n);
+        for(int i = n-1; i >= N; i--){
+            R.push(nums[i]);
+            r += nums[i];
+            if(R.size() > N){
+                r -= R.top();
+                R.pop();
+            }
+            if(R.size() == N) v[i] = r;
+        }
+        for(int i = 0; i < n-N; i++){
+            L.push(nums[i]);
+            l += nums[i];
+            if(L.size() > N){
+                l -= L.top();
+                L.pop();
+            }
+            if(L.size() == N) res = min(res, l-v[i+1]);
+        }
+        return res;
+    }
+};
+

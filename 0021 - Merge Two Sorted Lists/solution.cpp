@@ -10,15 +10,14 @@
  */
 class Solution {
 public:
-    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
-        if(!l1 || !l2) return !l1?l2:l1;
-        if(l1->val < l2->val){
-            l1->next = mergeTwoLists(l1->next, l2);
-            return l1;
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode *head, **t = &head;
+        while(list1 && list2){
+            if(list1->val < list2->val) *t = list1, list1 = list1->next;
+            else *t = list2, list2 = list2->next;
+            t = &((*t)->next);
         }
-        else{
-            l2->next = mergeTwoLists(l1, l2->next);
-            return l2;
-        }
+        *t = list1?list1:list2;
+        return head;
     }
 };

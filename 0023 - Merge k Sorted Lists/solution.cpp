@@ -9,18 +9,17 @@
  * };
  */
 class Solution {
-public:
+private:
     struct cmp{bool operator()(ListNode *l1, ListNode *l2){return l1->val>l2->val;}};
+public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        ListNode *head = nullptr, **now = &head;
+        ListNode *head = nullptr, **t = &head;
         priority_queue<ListNode*, vector<ListNode*>, cmp> q;
-        for(auto l : lists) if(l) q.push(l);
+        for(auto& l : lists) if(l) q.push(l);
         while(!q.empty()){
-            ListNode *node = q.top();
-            q.pop();
-            if(node->next) q.push(node->next);
-            *now = node;
-            now = &((*now)->next);
+            *t = q.top(); q.pop();
+            if((*t)->next) q.push((*t)->next);
+            t = &((*t)->next);
         }
         return head;
     }
