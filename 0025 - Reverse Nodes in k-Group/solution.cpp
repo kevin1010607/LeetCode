@@ -12,9 +12,9 @@ class Solution {
 public:
     ListNode* reverseKGroup(ListNode* head, int k) {
         int n = 0;
-        ListNode *d = new ListNode(-1, head), *now = head, *tail;
+        ListNode d = ListNode(-1, head), *now = head, *tail;
         while(now) now = now->next, n++;
-        now = d;
+        now = &d;
         for(int i = 0; i < n/k; i++){
             head = now, tail = now->next, now = now->next->next;
             for(int j = 0; j < k-1; j++){
@@ -25,6 +25,6 @@ public:
             }
             now = tail;
         }
-        return d->next;
+        return d.next;
     }
 };

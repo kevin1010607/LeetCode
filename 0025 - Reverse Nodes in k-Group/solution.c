@@ -11,13 +11,12 @@ struct ListNode* reverseKGroup(struct ListNode* head, int k){
         if(!now) return head;
         now = now->next;
     }
-    prev = NULL, now = head;
+    prev = reverseKGroup(now, k), now = head;
     for(int i = 0; i < k; i++){
         tmp = now->next;
         now->next = prev;
         prev = now;
         now = tmp;
     }
-    head->next = reverseKGroup(now, k);
     return prev;
 }

@@ -1265,3 +1265,107 @@ public:
     }
 };
 
+
+class Solution {
+public:
+    vector<int> sortEvenOdd(vector<int>& nums) {
+        vector<int> a, b;
+        for(int i = 0; i < nums.size(); i++){
+            if(i%2) a.push_back(nums[i]);
+            else b.push_back(nums[i]);
+        }
+        sort(a.begin(), a.end());
+        reverse(a.begin(), a.end());
+        sort(b.begin(), b.end());
+        int idx1 = 0, idx2 = 0;
+        vector<int> res;
+        for(int i = 0; i < nums.size(); i++){
+            if(i%2) res.push_back(a[idx1++]);
+            else res.push_back(b[idx2++]);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long smallestNumber(long long num) {
+        vector<int> s;
+        int flag = 1;
+        if(num < 0)flag = 0, num = -num;
+        if(num == 0) return 0;
+        while(num) {s.push_back(num%10); num /= 10;}
+        sort(s.begin(), s.end());
+        long long res = 0;
+        if(flag){
+            int id = 0;
+            while(s[id]==0) id++;
+            res = s[id];
+            s.erase(s.begin()+id);
+            for(auto i : s) res = 10*res+i;
+            
+        }
+        else{
+            int id = 0;
+            while(s[id]==0) id++;
+            res = -s.back();
+            s.pop_back();
+            for(int i = s.size()-1; i >= 0; i--) res = 10*res-s[i];
+        }
+        return res;
+    }
+};
+
+class Bitset {
+public:
+    vector<int> v;
+    int sum = 0;
+    int f = 0;
+    Bitset(int size) {
+        v = vector<int>(size, 0);
+    }
+    
+    void fix(int idx) {
+        if(v[idx]^f == 0) sum++, v[idx] ^= 1;
+    }
+    
+    void unfix(int idx) {
+        if(v[idx]^f == 1) sum--, v[idx] ^= 1;
+    }
+    
+    void flip() {
+        f ^= 1;
+        sum = v.size()-sum;
+    }
+    
+    bool all() {
+        return sum == v.size();
+    }
+    
+    bool one() {
+        return sum > 0;
+    }
+    
+    int count() {
+        return sum;
+    }
+    
+    string toString() {
+        string s;
+        for(auto i : v) s += '0'+i^f;
+        return s;
+    }
+};
+
+/**
+ * Your Bitset object will be instantiated and called as such:
+ * Bitset* obj = new Bitset(size);
+ * obj->fix(idx);
+ * obj->unfix(idx);
+ * obj->flip();
+ * bool param_4 = obj->all();
+ * bool param_5 = obj->one();
+ * int param_6 = obj->count();
+ * string param_7 = obj->toString();
+ */
+
