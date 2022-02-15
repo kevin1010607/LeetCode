@@ -4,7 +4,9 @@ class Solution:
         for i in s1:
             t1[ord(i)-ord('a')] += 1
         for i in range(len(s2)):
-            if i>=n: t2[ord(s2[i-n])-ord('a')] -= 1
+            if i>=n:
+                t2[ord(s2[i-n])-ord('a')] -= 1
             t2[ord(s2[i])-ord('a')] += 1
-            if t1==t2: return True
+            if t1==t2:
+                return True
         return False
