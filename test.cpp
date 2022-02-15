@@ -1369,3 +1369,54 @@ public:
  * string param_7 = obj->toString();
  */
 
+
+class Solution {
+public:
+    int countOperations(int num1, int num2) {
+        int res = 0;
+        if(num1 < num2) swap(num1, num2);
+        while(num2){
+            int tmp = num1;
+            num1 = num2;
+            num2 = tmp-num2;
+            if(num1 < num2) swap(num1, num2);
+            res++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int minimumOperations(vector<int>& nums) {
+        int n = nums.size();
+        if(n == 1) return 0;
+        unordered_map<int, int> m1, m2;
+        for(int i = 0; i < n; i += 2) m1[nums[i]]++;
+        for(int i = 1; i < n; i += 2) m2[nums[i]]++;
+        int res = 0, a1 = 0, a2 = 0, b1 = 0, b2 = 0, a = 0, b = 0;
+        for(auto& [i, v] : m1){
+            if(v > a1) a2 = a1, a1 = v, a = i;
+            else if(v > a2) a2 = v;
+        }
+        for(auto& [i, v] : m2){
+            if(v > b1) b2 = b1, b1 = v, b = i;
+            else if(v > b2) b2 = v;
+        }
+        if(a != b) res = n-a1-b1;
+        else res = n-max({a1+b2, a1+a2, b1+a2, b1+b2});
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long minimumRemoval(vector<int>& beans) {
+        long long n = beans.size(), res = LLONG_MAX;
+        long long s = accumulate(beans.begin(), beans.end(), 0L);
+        sort(beans.begin(), beans.end());
+        for(int i = 0; i < n; i++) res = min(res, s-(n-i)*beans[i]);
+        return res;
+    }
+};
+
