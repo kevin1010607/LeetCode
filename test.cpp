@@ -1420,3 +1420,53 @@ public:
     }
 };
 
+class Solution {
+public:
+    int countPairs(vector<int>& nums, int k) {
+        int res = 0;
+        for(int i = 0; i < nums.size(); i++){
+            for(int j = i+1; j < nums.size(); j++){
+                if(nums[i]==nums[j] && (i*j)%k==0) res++;
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<long long> sumOfThree(long long num) {
+        if(num%3 != 0) return {};
+        long long a = num/3-1;
+        return {a, a+1, a+2};
+    }
+};
+
+class Solution {
+public:
+    vector<long long> maximumEvenSplit(long long S) {
+        if(S%2) return {};
+        vector<long long> v(110000), res;
+        for(long long i = 1; i < 110000; i++){
+            v[i] = v[i-1]+i*2;
+        }
+        // cout << v.back() << endl;
+        auto it = lower_bound(v.begin(), v.end(), S);
+        if(*it > S) it--;
+        long long p = 2, s = 0;
+        for(auto i = v.begin(); i!=it; i++){
+            res.push_back(p);
+            s += p;
+            p += 2;
+        }
+        res.pop_back();
+        p -= 2;
+        s -= p;
+        // cout << s << " " << p << " " << S-s << endl;
+        long long ad = S-s;
+        if(ad < p) ad += res.back() , res.pop_back();
+        res.push_back(ad);
+        return res;
+    }
+};
+

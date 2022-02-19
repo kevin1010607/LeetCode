@@ -63,3 +63,22 @@ void freeHeap(Heap *h){
     free(h->a);
     free(h);
 }
+
+int max(int a, int b) {return a>b?a:b;}
+int min(int a, int b) {return a<b?a:b;}
+int minimumDeviation(int* nums, int numsSize){
+    int res = INT_MAX, mi = INT_MAX, n = numsSize;
+    Heap *h = newHeap(105);
+    for(int i = 0; i < n; i++){
+        int now = nums[i]%2?nums[i]*2:nums[i];
+        push(h, -now);
+        mi = min(mi, now);
+    }
+    while(size(h) == n){
+        int ma = -top(h); pop(h);
+        res = min(res, ma-mi);
+        if(ma%2 == 0) push(h, -ma/2), mi = min(mi, ma/2);
+    }
+    freeHeap(h);
+    return res;
+}
