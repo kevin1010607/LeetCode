@@ -1470,3 +1470,67 @@ public:
     }
 };
 
+class Solution {
+public:
+    int countEven(int num) {
+        int res = 0;
+        for(int i = 1; i <= num; i++){
+            int tmp = i, s = 0;
+            while(tmp) s += tmp%10, tmp /= 10;
+            if(s%2 == 0) res++;
+        }
+        return res;
+    }
+};
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeNodes(ListNode* head) {
+        if(!head->next) return nullptr;
+        ListNode *now = head->next;
+        while(now->next->val != 0){
+            now->val += now->next->val;
+            ListNode *tmp = now->next;
+            now->next = tmp->next;
+            delete tmp;
+        }
+        now->next = mergeNodes(now->next);
+        return head->next;
+    }
+};
+
+class Solution {
+public:
+    string repeatLimitedString(string s, int L) {
+        map<char, int> m;
+        for(auto c : s) m[c]++;
+        int n = 0, cnt = 0;
+        char pre = '0';
+        string res = "";
+        while(n < s.size()){
+            auto it = m.rbegin();
+            int k = min(L, it->second);
+            if(it->first == pre){
+                it++;
+                if(it == m.rend()) break;
+                k = 1;
+            }
+            m[it->first] -= k;
+            pre = it->first, n += k;
+            while(k--) res += it->first;
+            if(m[it->first] == 0) m.erase(it->first);
+        }
+        return res;
+    }
+};
+
