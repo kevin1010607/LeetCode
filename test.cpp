@@ -1534,3 +1534,623 @@ public:
     }
 };
 
+class Solution {
+public:
+    int prefixCount(vector<string>& words, string pref) {
+        int res = 0;
+        for(auto& s: words) if(s.substr(0, pref.size()) == pref) res++;
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int minSteps(string s, string t) {
+        int a[26] = {}, b[26] = {}, res = 0;
+        for(auto c : s) a[c-'a']++;
+        for(auto c : t) b[c-'a']++;
+        for(int i = 0; i < 26; i++){
+            res += abs(a[i]-b[i]);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long minimumTime(vector<int>& time, int totalTrips) {
+        long long l = 0, r = (1e14)+5;
+        while(l < r){
+            long long mid = (l+r)/2;
+            long long now = 0;
+            for(auto i : time) now += mid/i;
+            if(now >= totalTrips) r = mid;
+            else l = mid+1;
+        }
+        return l;
+    }
+};
+
+class Solution {
+public:
+    int mostFrequent(vector<int>& nums, int key) {
+        int res = 0, mm = -1;
+        unordered_map<int, int> m;
+        for(int i = 0; i < nums.size()-1; i++){
+            if(nums[i] == key) m[nums[i+1]]++;
+            if(m[nums[i+1]] > mm) mm = m[nums[i+1]], res = nums[i+1];
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int Get(int n, vector<int>& m){
+        if(n == 0) return m[0];
+        int res = 0, p = 1;
+        while(n){
+            res += p*m[n%10];
+            p *= 10, n /= 10;
+        }
+        return res;
+    }
+    vector<int> sortJumbled(vector<int>& mapping, vector<int>& nums) {
+        vector<pair<int, int>> v(nums.size());
+        for(int i = 0; i < nums.size(); i++){
+            int k = Get(nums[i], mapping);
+            v[i] = {k, nums[i]};
+        }
+        stable_sort(v.begin(), v.end(), [](auto a, auto b){return a.first<b.first;});
+        for(int i = 0; i < nums.size(); i++){
+            nums[i] = v[i].second;
+        }
+        return nums;
+    }
+};
+
+class Solution {
+public:
+    void dfs(int now, vector<unordered_set<int>>& r, unordered_set<int>& e, vector<int>& c, queue<int>& q){
+        for(auto i : e){
+            r[i].insert(now);
+            for(auto j : r[now]) r[i].insert(j);
+            if(--c[i] == 0) q.push(i);
+        }
+    }
+    vector<vector<int>> getAncestors(int n, vector<vector<int>>& edges) {
+        vector<unordered_set<int>> r(n), e(n);
+        vector<int> c(n);
+        for(auto& v : edges){
+            e[v[0]].insert(v[1]);
+            c[v[1]]++;
+        }
+        queue<int> q;
+        for(int i = 0; i < n; i++) if(c[i] == 0) q.push(i);
+        while(!q.empty()){
+            int now = q.front(); q.pop();
+            dfs(now, r, e[now], c, q);
+        }
+        vector<vector<int>> res(n);
+        for(int i = 0; i < n; i++){
+            for(auto j : r[i]) res[i].push_back(j);
+            sort(res[i].begin(), res[i].end());
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int minMovesToMakePalindrome(string s) {
+        int res = 0;
+        while(s != ""){
+            int idx = s.find(s.back());
+            if(idx == s.size()-1) res += idx/2;
+            else res += idx, s.erase(idx, 1);
+            s.pop_back();
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<string> cellsInRange(string s) {
+        string ss = "XX";
+        vector<string> res;
+        for(char i = s[0]; i <= s[3]; i++){
+            ss[0] = i;
+            for(char j = s[1]; j <= s[4]; j++){
+                ss[1] = j;
+                res.push_back(ss);
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long minimalKSum(vector<int>& nums, long long k) {
+        long long res = k*(k+1)/2, idx = k+1;
+        set<int> s(nums.begin(), nums.end());
+        for(auto i : s){
+            if(i < idx) res += idx++, res -= i;
+        }
+        return res;
+    }
+};
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* createBinaryTree(vector<vector<int>>& descriptions) {
+        unordered_map<int, TreeNode*> m;
+        unordered_set<int> pa, ch;
+        for(auto& i : descriptions){
+            int p = i[0], c = i[1], l = i[2];
+            TreeNode *a = nullptr, *b = nullptr;
+            if(m.count(p)) a = m[p];
+            else m[p] = a = new TreeNode(p);
+            if(m.count(c)) b = m[c];
+            else m[c] = b = new TreeNode(c);
+            if(l == 1) a->left = b;
+            else a->right = b;
+            pa.insert(p), ch.insert(c);
+        }
+        for(auto i : pa){
+            if(!ch.count(i)) return m[i];
+        }
+        return nullptr;
+    }
+};
+
+class Solution {
+public:
+    vector<int> replaceNonCoprimes(vector<int>& nums) {
+        nums.push_back(1);
+        vector<int> res;
+        int idx = 1, now = nums[0];
+        while(idx < nums.size()){
+            int a = gcd(now, nums[idx]);
+            if(a > 1) now = (long long)now*nums[idx]/a, idx++;
+            else{
+                while(!res.empty()){
+                    int k = gcd(now, res.back());
+                    if(k > 1) now = (long long)now*res.back()/k, res.pop_back();
+                    else break;
+                }
+                res.push_back(now);
+                now = nums[idx];
+                idx++;
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> findKDistantIndices(vector<int>& nums, int key, int k) {
+        int prev = -1;
+        vector<int> res;
+        for(int i = 0; i < nums.size(); i++){
+            if(nums[i] == key){
+                for(int j = max(prev+1, i-k); j < i; j++) res.push_back(j);
+                prev = i+k;
+            }
+            if(i <= prev) res.push_back(i);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int digArtifacts(int n, vector<vector<int>>& artifacts, vector<vector<int>>& dig) {
+        int res = 0;
+        vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
+        for(auto& i : dig) dp[i[0]+1][i[1]+1] = 1;
+        for(int i = 1; i <= n; i++){
+            for(int j = 1; j <= n; j++){
+                dp[i][j] = dp[i-1][j]+dp[i][j-1]-dp[i-1][j-1]+dp[i][j];
+            }
+        }
+        for(auto& i : artifacts){
+            int k = dp[i[2]+1][i[3]+1]-dp[i[2]+1][i[1]]-dp[i[0]][i[3]+1]+dp[i[0]][i[1]];
+            if(k == (i[2]-i[0]+1)*(i[3]-i[1]+1)) res++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int maximumTop(vector<int>& nums, int k) {
+        int n = nums.size();
+        if(n==1 && k%2==1) return -1;
+        if(k >= n){
+            int r = k-n;
+            if(r == 0) return *max_element(nums.begin(), nums.begin()+(n-1));
+            else return *max_element(nums.begin(), nums.end());
+        }
+        else{
+            if(k == 0) return nums[0];
+            if(k == 1) return nums[k];
+            int a = *max_element(nums.begin(), nums.begin()+(k-1));
+            return max(a, nums[k]);
+        }
+        return -1;
+    }
+};
+
+class Solution {
+public:
+    bool divideArray(vector<int>& nums) {
+        unordered_map<int, int> m;
+        for(auto i : nums) m[i]++;
+        for(auto& [i, v] : m){
+            if(v%2) return false;
+        }
+        return true;
+    }
+};
+
+class Solution {
+public:
+    long long maximumSubsequenceCount(string text, string pattern) {
+        long long c1 = 0, c2 = 0, res = 0;
+        for(auto c : text){
+            if(c == pattern[1]) res += c1, c2++;
+            if(c == pattern[0]) c1++;
+        }
+        res += max(c1, c2);
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int halveArray(vector<int>& nums) {
+        double total = 0;
+        for(auto i : nums) total += i;
+        double now = total;
+        multiset<double> s(nums.begin(), nums.end());
+        int res = 0;
+        while(now > total/2){
+            auto it  = s.rbegin();
+            double ne = (*it)/2;
+            now -= (*it);
+            now += ne;
+            s.erase(s.find(*it));
+            s.insert(ne);
+            res++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int countHillValley(vector<int>& nums) {
+        int res = 0;
+        for(int i = 1; i <= nums.size()-2; i++){
+            if(nums[i+1] == nums[i]) {nums.erase(nums.begin()+(i+1)); i--; continue;}
+            if(nums[i-1]<nums[i] && nums[i+1]<nums[i]) res++;
+            if(nums[i-1]>nums[i] && nums[i+1]>nums[i]) res++;
+        }
+        return res;
+    }
+};
+
+
+class Solution {
+public:
+    int countCollisions(string d) {
+        int n = d.size(), res = n;
+        for(int i = 0; i < n; i++){
+            if(d[i] == 'L') res--;
+            else break;
+        }
+        for(int i = n-1; i >= 0; i--){
+            if(d[i] == 'R') res--;
+            else break;
+        }
+        for(auto c : d) if(c == 'S') res--;
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> maximumBobPoints(int num, vector<int>& A) {
+        int M = 0, res = 0;
+        for(int i = 0; i < (1<<12); i++){
+            int total = 0, t = 0, m = 0;
+            for(int j = 0; j < 12; j++){
+                if((i>>j)&1){
+                    t |= (1<<j);
+                    total += (A[j]+1);
+                    m += j;
+                }
+            }
+            if(total<=num && m>M){
+                M = m, res = t;
+            }
+        }
+        int to = 0;
+        vector<int> v(12);
+        for(int i = 0; i < 12; i++){
+            if((res>>i)&1){
+                v[i] = A[i]+1;
+                to += v[i];
+            }
+        }
+        if(to < num){
+            int idx = 0;
+            while(idx<12 && v[idx]==0) idx++;
+            if(idx == 12) idx--;
+            v[idx] += (num-to);
+        }
+        return v;
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> findDifference(vector<int>& nums1, vector<int>& nums2) {
+        unordered_set<int> m1(nums1.begin(), nums1.end()), m2(nums2.begin(), nums2.end());
+        vector<vector<int>> res(2);
+        for(auto i : m1) if(!m2.count(i)) res[0].push_back(i);
+        for(auto i : m2) if(!m1.count(i)) res[1].push_back(i);
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int minDeletion(vector<int>& nums) {
+        int flip = 0, res = 0;
+        for(int i = 0; i < nums.size()-1; i++){
+            if((i%2==0&&!flip) || (i%2==1&&flip)){
+                if(nums[i] == nums[i+1]) res++, flip ^= 1;
+            }
+        }
+        if((nums.size()-res)%2) res++;
+        return res;
+    }
+};
+
+class Solution {
+public:
+    string getS(int idx, int L, vector<long long>& dp){
+        if(L == 0) return "";
+        else if(L == 1) return to_string(idx);
+        else if(L == 2) return to_string(idx)+to_string(idx);
+        int i = idx/dp[L-2], j = idx%dp[L-2];
+        return to_string(i)+getS(j, L-2, dp)+to_string(i);
+    }
+    vector<long long> kthPalindrome(vector<int>& queries, int L) {
+        vector<long long> dp(16), res;
+        dp[0] = 0, dp[1] = 10, dp[2] = 10;
+        for(int i = 3; i < dp.size(); i++) dp[i] = 10*dp[i-2];
+        long long n;
+        if(L == 1) n = 10;
+        else if(L == 2) n = 9;
+        else n = 9*dp[L-2];
+        for(auto i : queries){
+            if(L == 1) res.push_back(i<=9?i:-1);
+            else if(L == 2) res.push_back(i<=9?i*10+i:-1);
+            else if(i > n) res.push_back(-1);
+            else{
+                int j = (i-1)/dp[L-2]+1, k = (i-1)%dp[L-2];
+                string now = getS(k, L-2, dp);
+                long long r = j;
+                for(auto c : now) r = r*10+(c-'0');
+                r = r*10+j;
+                res.push_back(r);
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int maxValueOfCoins(vector<vector<int>>& piles, int k) {
+        int n = piles.size();
+        vector<vector<int>> dp(k+1, vector<int>(n+1));
+        for(int i = 1; i <= k; i++){
+            for(int j = 1; j <= n; j++){
+                int nc = piles[j-1].size(), s = 0;
+                dp[i][j] = dp[i][j-1];
+                for(int c = 1; c<=i && c<=nc; c++){
+                    s += piles[j-1][c-1];
+                    dp[i][j] = max(dp[i][j], dp[i-c][j-1]+s);
+                }
+            }
+        }
+        return dp[k][n];
+    }
+};
+
+class Solution {
+public:
+    int minBitFlips(int start, int goal) {
+        int res = 0;
+        while(start || goal){
+            if((start&1) != (goal&1)) res++;
+            start >>= 1, goal >>= 1;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int triangularSum(vector<int>& nums) {
+        int n = nums.size();
+        for(int i = n; i > 1; i--){
+            for(int j = 0; j < i-1; j++){
+                nums[j] = (nums[j]+nums[j+1])%10;
+            }
+        }
+        return nums[0];
+    }
+};
+
+class Solution {
+public:
+    long long numberOfWays(string s) {
+        vector<long long> dp(1, 0);
+        char prev = s[0];
+        for(auto c : s){
+            if(c == prev) dp.back()++;
+            else dp.push_back(1), prev = c;
+        }
+        if(dp.size() < 3) return 0;
+        long long res = 0, _0 = dp[0], _1 = dp[1], _01 = dp[0]*dp[1], _10 = 0;
+        for(int i = 2; i < dp.size(); i++){
+            if(i%2 == 0){
+                res += _01*dp[i];
+                _10 += _1*dp[i];
+                _0 += dp[i];
+            }
+            else{
+                res += _10*dp[i];
+                _01 += _0*dp[i];
+                _1 += dp[i];
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int convertTime(string current, string correct) {
+        auto getNum = [] (string& s, int l, int r){
+            int res = 0;
+            for(int i = l; i <= r; i++) res = 10*res+(s[i]-'0');
+            return res;
+        };
+        int h1 = getNum(current, 0, 1), m1 = getNum(current, 3, 4);
+        int h2 = getNum(correct, 0, 1), m2 = getNum(correct, 3, 4);
+        if(m1 > m2) m2 += 60, h2--;
+        if(h1 > h2) h2 += 24;
+        int res = 0, total = (m2-m1)+60*(h2-h1);
+        res += total/60, total %= 60;
+        res += total/15, total %= 15;
+        res += total/5, total %= 5;
+        res += total;
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> findWinners(vector<vector<int>>& matches) {
+        map<int, int> m;
+        for(auto& i : matches){
+            m[i[0]] = m[i[0]];
+            m[i[1]]++;
+        }
+        vector<vector<int>> res(2);
+        for(auto& [key, val] : m){
+            if(val == 0) res[0].push_back(key);
+            if(val == 1) res[1].push_back(key);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int maximumCandies(vector<int>& candies, long long k) {
+        long long total = accumulate(candies.begin(), candies.end(), (long long)0);
+        if(total < k) return 0;
+        auto valid = [&](long long num){
+            long long res = 0;
+            for(auto i : candies) res += i/num;
+            return res>=k;
+        };
+        long long l = 1, r = total/k;
+        while(l < r){
+            long long mid = l+(r-l)/2+1;
+            if(valid(mid)) l = mid;
+            else r = mid-1;
+        }
+        return l;
+    }
+};
+
+class Solution {
+public:
+    int largestInteger(int num) {
+        vector<int> v1, v2, k;
+        int res = 0;
+        while(num){
+            if(num%2) v1.push_back(num%10), k.push_back(1);
+            else v2.push_back(num%10), k.push_back(2);
+            num /= 10;
+        }
+        int id1 = v1.size()-1, id2 = v2.size()-1;
+        sort(v1.begin(), v1.end());
+        sort(v2.begin(), v2.end());
+        for(int i = k.size()-1; i >= 0; i--){
+            if(k[i] == 1) res = 10*res+v1[id1--];
+            else res = 10*res+v2[id2--];
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    string minimizeResult(string e) {
+        int M = INT_MAX, id = e.find('+');
+        string res, s1 = e.substr(0, id), s2 = e.substr(id+1);
+        for(int i = 0; i < s1.size(); i++){
+            for(int j = 0; j < s2.size(); j++){
+                int n1 = i==0?1:stoi(s1.substr(0, i));
+                int n2 = stoi(s1.substr(i))+stoi(s2.substr(0, j+1));
+                int n3 = j==s2.size()-1?1:stoi(s2.substr(j+1));
+                if(M > n1*n2*n3){
+                    M = n1*n2*n3;
+                    res = s1.substr(0, i)+"("+s1.substr(i)+"+"+s2.substr(0, j+1)+")"+s2.substr(j+1);
+                }
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    const int mod = 1e9+7;
+    int maximumProduct(vector<int>& nums, int k) {
+        priority_queue<int, vector<int>, greater<int>> q(nums.begin(), nums.end());
+        while(k--){
+            int now = q.top(); q.pop();
+            q.push(now+1);
+        }
+        long long res = 1;
+        while(!q.empty()){
+            res = (res*q.top())%mod;
+            q.pop();
+        }
+        return res;
+    }
+};
+
