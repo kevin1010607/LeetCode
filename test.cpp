@@ -2154,3 +2154,233 @@ public:
     }
 };
 
+class Solution {
+public:
+    int findClosestNumber(vector<int>& nums) {
+        int res = 0, m = INT_MAX;
+        for(auto i : nums){
+            int k = abs(i);
+            if(k < m) res = i, m = k;
+            else if(k == m && i > res) res = i;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long waysToBuyPensPencils(int total, int cost1, int cost2) {
+        long long res = 0;
+        for(int i = 0; i*cost1 <= total; i++){
+            int now = total-i*cost1;
+            res += now/cost2+1;
+        }
+        return res;
+    }
+};
+
+class ATM {
+private:
+    vector<long long> v;
+    int m[5];
+public:
+    ATM() {
+        v = vector<long long>(5, 0);
+        m[0] = 20, m[1] = 50, m[2] = 100, m[3] = 200, m[4] = 500;
+    }
+    
+    void deposit(vector<int> bC) {
+        for(int i = 0; i < 5; i++){
+            v[i] += bC[i];
+        }
+    }
+    
+    vector<int> withdraw(long long amount) {
+        vector<int> res(5, 0);
+        for(int i = 4; i >= 0; i--){
+            int k = min(amount/m[i], v[i]);
+            res[i] += k;
+            amount -= m[i]*k;
+        }
+        if(amount != 0) return {-1};
+        for(int i = 4; i >= 0; i--) v[i] -= res[i];
+        return res;
+    }
+};
+
+/**
+ * Your ATM object will be instantiated and called as such:
+ * ATM* obj = new ATM();
+ * obj->deposit(banknotesCount);
+ * vector<int> param_2 = obj->withdraw(amount);
+ */
+
+class Solution {
+public:
+    struct S{int t, a, b;};
+    bool diff(S& a, S& b){
+        if(a.a==b.a || a.a==b.b) return false;
+        if(a.b==b.a || a.b==b.b) return false;
+        return true;
+    }
+    bool connect(S& a, S& b, vector<unordered_set<int>>& g){
+        if(g[a.a].count(b.a)) return true;
+        if(g[a.a].count(b.b)) return true;
+        if(g[a.b].count(b.a)) return true;
+        if(g[a.b].count(b.b)) return true;
+        return false;
+    }
+    int maximumScore(vector<int>& scores, vector<vector<int>>& edges) {
+        int n = scores.size(), m = edges.size(), res = -1;
+        vector<unordered_set<int>> graph(n);
+        for(auto& i : edges){
+            graph[i[0]].insert(i[1]);
+            graph[i[1]].insert(i[0]);
+        }
+        vector<S> v(m), used;
+        for(int i = 0; i < m; i++){
+            v[i].a = edges[i][0], v[i].b = edges[i][1];
+            v[i].t = scores[edges[i][0]]+scores[edges[i][1]];
+        }
+        sort(v.begin(), v.end(), [](auto a, auto b){return a.t > b.t;});
+        for(int i = 0; i < m; i++){
+            if(!used.empty() && v[i].t+used[0].t <= res) break;
+            for(int j = 0; j < used.size(); j++){
+                if(v[i].t+used[j].t <= res) break;
+                if(!diff(v[i], used[j])) continue;
+                if(connect(v[i], used[j], graph)) res = max(res, v[i].t+used[j].t);
+            }
+            used.push_back(v[i]);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    string digitSum(string s, int k) {
+        string tmp;
+        while(s.size() > k){
+            string tmp = "";
+            for(int i = 0; i < (s.size()%k?s.size()/k+1:s.size()/k); i++){
+                int now = 0;
+                for(int j = i*k; j < min((int)s.size(), i*k+k); j++) now += (s[j]-'0');
+                tmp += to_string(now);
+            }
+            s = tmp;
+        }
+        return s;
+    }
+};
+
+class Solution {
+public:
+    int minimumRounds(vector<int>& tasks) {
+        int res = 0;
+        unordered_map<int, int> m;
+        for(auto i : tasks) m[i]++;
+        for(auto& [i, v] : m){
+            if(v == 1) return -1;
+            else if(v == 2 || v == 3) res += 1;
+            else if(v == 4) res += 2;
+            else if(v%3 == 1) res += (v/3-1+2);
+            else res +=(v/3+v%3/2);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int maxTrailingZeros(vector<vector<int>>& grid) {
+        int m = grid.size(), n = grid[0].size(), res = 0;
+        vector<vector<pair<int, int>>> r(m+1, vector<pair<int, int>>(n+1)), c(n+1, vector<pair<int, int>>(m+1));
+        for(int i = 1; i <= m; i++){
+            for(int j = 1; j <= n; j++){
+                int p = 0, q = 0;
+                while(grid[i-1][j-1]%2 == 0) p++, grid[i-1][j-1] /= 2;
+                while(grid[i-1][j-1]%5 == 0) q++, grid[i-1][j-1] /= 5;
+                r[i][j].first = r[i][j-1].first+p;
+                c[j][i].first = c[j][i-1].first+p;
+                r[i][j].second = r[i][j-1].second+q;
+                c[j][i].second = c[j][i-1].second+q;
+            }
+        }
+        for(int i = 1; i <= m; i++){
+            for(int j = 1; j <= n; j++){
+                auto [v11, v12] = c[j][i];
+                int v21 = c[j][m].first-c[j][i-1].first, v22 = c[j][m].second-c[j][i-1].second;
+                auto [h11, h12] = r[i][j-1];
+                int h21 = r[i][n].first-r[i][j].first, h22 = r[i][n].second-r[i][j].second;
+                res = max(res, min(v11+h11, v12+h12));
+                res = max(res, min(v11+h21, v12+h22));
+                res = max(res, min(v21+h11, v22+h12));
+                res = max(res, min(v21+h21, v22+h22));
+            }
+        }       
+        return res;
+    }
+};
+
+class Solution {
+public:
+    string removeDigit(string number, char digit) {
+        string res = "0";
+        for(int i = 0; i < number.size(); i++){
+            if(number[i] != digit) continue;
+            string tmp = number.substr(0,i)+number.substr(i+1, number.size()-i-1);
+            res = max(res, tmp);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int minimumCardPickup(vector<int>& cards) {
+        int res = -1;
+        unordered_map<int, int> m;
+        for(int i = 0; i < cards.size(); i++){
+            if(m.count(cards[i])){
+                 if(res==-1 || i-m[cards[i]]+1<res) res = i-m[cards[i]]+1;
+            }
+            m[cards[i]] = i;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int countDistinct(vector<int>& nums, int k, int p) {
+        int n = nums.size(), res = 0;
+        vector<set<vector<int>>> s(n);
+        for(int i = 0; i < n; i++){
+            int cnt = 0;
+            vector<int> tmp;
+            for(int j = i; j < n; j++){
+                if(cnt == k && nums[j]%p == 0) break;
+                if(nums[j]%p == 0) cnt++;
+                tmp.push_back(nums[j]);
+                if(!s[j-i].count(tmp)) res++;
+                s[j-i].insert(tmp);
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long appealSum(string s) {
+        long long res = 0, prev = 0;
+        unordered_map<char, int> m;
+        for(int i = 0; i < s.size(); i++){
+            int tmp = m.count(s[i])?(i-m[s[i]]):(i+1);
+            res += prev+tmp;
+            prev += tmp;
+            m[s[i]] = i;
+        }
+        return res;
+    }
+};
