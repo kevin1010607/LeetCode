@@ -1,3 +1,4 @@
+from collections import Counter
 class Solution:
     def maxOperations(self, A: List[int], k: int) -> int:
         c = Counter(A);
