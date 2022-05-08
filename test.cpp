@@ -2384,3 +2384,90 @@ public:
         return res;
     }
 };
+
+class Solution {
+public:
+    string largestGoodInteger(string s) {
+        string res = "";
+        for(int i = 2; i < s.size(); i++){
+            if(s[i]==s[i-1] && s[i]==s[i-2]) res = max(res, s.substr(i-2, 3));
+        }
+        return res;
+    }
+};
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    pair<int, int> dfs(TreeNode *root, int &res){
+        if(!root) return {0, 0};
+        auto a = dfs(root->left, res);
+        auto b = dfs(root->right, res);
+        int aver = (root->val+a.second+b.second)/(a.first+b.first+1);
+        res += (aver==root->val);
+        return {a.first+b.first+1, root->val+a.second+b.second};
+    }
+    int averageOfSubtree(TreeNode* root) {
+        int res = 0;
+        dfs(root, res);
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int countTexts(string s) {
+        s += "#";
+        const int mod = 1e9+7;
+        long long res = 1;
+        unordered_map<char, int> m{{'2',3},{'3',3},{'4',3},{'5',3},{'6',3},{'7',4},{'8',3},{'9',4}};
+        int cnt = 1;
+        vector<long long> dp(2, 1);
+        for(int i = 1; i < s.size(); i++){
+            if(s[i] == s[i-1]){
+                cnt++;
+                dp.push_back(0);
+                for(int j = 1; j <= m[s[i]]; j++){
+                    if(cnt-j < 0) break;
+                    dp[cnt] = (dp[cnt]+dp[cnt-j])%mod;
+                }
+            }
+            else{
+                cnt = 1;
+                res = (res*dp.back())%mod;
+                dp = vector<long long>(2, 1);
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int m, n, step, mem[105][105][105] = {};
+    bool dfs(int x, int y, int d, vector<vector<char>>& A){
+        d += A[x][y]=='('?1:-1;
+        if(d<0 || d>(step)-(x+y+1) || mem[x][y][d]) return false;
+        mem[x][y][d] = true;
+        if(x==m-1 && y==n-1) return d==0;
+        if(x<m-1 && dfs(x+1, y, d, A)) return true;
+        if(y<n-1 && dfs(x, y+1, d, A)) return true;
+        return false;
+    }
+    bool hasValidPath(vector<vector<char>>& A) {
+        m = A.size(), n = A[0].size(), step = m+n-1;
+        if(A[0][0]==')' || A[m-1][n-1]=='(' || step%2) return false;
+        return dfs(0, 0, 0, A);
+    }
+};
+
