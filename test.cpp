@@ -2471,3 +2471,91 @@ public:
     }
 };
 
+class Solution {
+public:
+    int divisorSubstrings(int num, int k) {
+        int res = 0;
+        string s = to_string(num);
+        for(int i = 0; i < s.size()-k+1; i++){
+            string now = s.substr(i, k);
+            int d = stoi(now);
+            if(d == 0) continue;
+            if(num%d == 0) res++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int waysToSplitArray(vector<int>& nums) {
+        int n = nums.size();
+        vector<long long> dp(n);
+        dp[0] = nums[0];
+        for(int i = 1; i < n; i++) dp[i] = dp[i-1]+nums[i];
+        int res = 0;
+        for(int i = 0; i < n-1; i++){
+            long long a = dp[i];
+            long long b = dp[n-1]-dp[i];
+            if(a >= b) res++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int maximumWhiteTiles(vector<vector<int>>& A, int L) {
+        int n = A.size();
+        sort(A.begin(), A.end());
+        vector<int> s(n);
+        for(int i = 0; i < n; i++) s[i] = A[i][0];
+        vector<long long> dp(n);
+        dp[0] = A[0][1]-A[0][0]+1;
+        for(int i = 1; i < n; i++) dp[i] = dp[i-1]+A[i][1]-A[i][0]+1;
+        int res = 0;
+        for(int i = 0; i < n; i++){
+            int M = A[i][0]+L;
+            auto it = lower_bound(s.begin(), s.end(), M);
+            int idx = it-s.begin();
+            idx--;
+            int now ;
+            if(A[idx][1] < M) now = dp[idx]-(i==0?0:dp[i-1]);
+            else now = (idx==0?0:dp[idx-1])-(i==0?0:dp[i-1])+M-A[idx][0];
+            res = max(res, now);
+        }
+        return res;
+    }
+};
+
+#define INF 0x3f3f3f3f
+class Solution {
+public:
+    int solve(string& s, char c1, char c2){
+        int res = 0, now = 0, mn = INF, last = INF, t = 0;
+        for(auto c : s){
+            if(c!=c1 && c!=c2) continue;
+            if(c == c1) now--;
+            if(c == c2) now++, t++;
+            if(now != t) res = max(res, now);
+            res = max(res, now-mn);
+            mn = min(mn, last);
+            last = now;
+        }
+        if(res == t) res--;
+        return res;
+    }
+    int largestVariance(string s) {
+        int res = 0;
+        vector<bool> v(26);
+        for(auto c : s) v[c-'a'] = true;
+        for(char c1 = 'a'; c1 <= 'z'; c1++){
+            if(!v[c1-'a']) continue;
+            for(char c2 = 'a'; c2 <= 'z'; c2++){
+                if(c1 == c2 || !v[c2-'a']) continue;
+                res = max(res, solve(s, c1, c2));
+            }
+        }
+        return res;
+    }
+};
