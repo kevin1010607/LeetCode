@@ -2559,3 +2559,77 @@ public:
         return res;
     }
 };
+
+class Solution {
+public:
+    vector<string> removeAnagrams(vector<string>& words) {
+        vector<string> res;
+        res.push_back(words[0]);
+        for(int i = 1; i < words.size(); i++){
+            int a[26] = {}, b[26] = {};
+            for(auto c : words[i]) a[c-'a']++;
+            for(auto c : res.back()) b[c-'a']++;
+            for(int j = 0; j < 26; j++) {if(a[j] != b[j]) {res.push_back(words[i]); break;}}
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int maxConsecutive(int bottom, int top, vector<int>& special) {
+        sort(special.begin(), special.end());
+        int res = max(special[0]-bottom, top-special.back());
+        for(int i = 1; i < special.size(); i++){
+            res = max(res, special[i]-special[i-1]-1);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int largestCombination(vector<int>& A) {
+        vector<int> v(32);
+        for(auto i : A){
+            bitset<32> b(i);
+            for(int j = 0; j < 32; j++) v[j] += b[j];
+        }
+        return *max_element(v.begin(), v.end());
+    }
+};
+
+#define P pair<int, int>
+#define F first
+#define S second
+class CountIntervals {
+public:
+    map<int, int> m;
+    int cnt = 0;
+    CountIntervals() {}
+    
+    void add(int l, int r) {
+        int s = l, e = r;
+        auto it = m.lower_bound(l);
+        while(it!=m.end() && it->S<=r+1){
+            s = min(s, it->S);
+            e = max(e, it->F);
+            cnt -= it->F-it->S+1;
+            it = m.erase(it);
+        }
+        m[e] = s;
+        cnt += e-s+1;
+    }
+    
+    int count() {
+        return cnt;
+    }
+};
+
+/**
+ * Your CountIntervals object will be instantiated and called as such:
+ * CountIntervals* obj = new CountIntervals();
+ * obj->add(left,right);
+ * int param_2 = obj->count();
+ */
+

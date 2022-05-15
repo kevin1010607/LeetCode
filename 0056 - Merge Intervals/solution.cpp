@@ -1,13 +1,21 @@
+#define F first
+#define S second
 class Solution {
 public:
-    vector<vector<int>> merge(vector<vector<int>>& intervals) {
-        sort(intervals.begin(), intervals.end());
-        int idx = 0;
-        for(auto& i : intervals){
-            if(i[0] <= intervals[idx][1]) intervals[idx][1] = max(intervals[idx][1], i[1]);
-            else intervals[++idx] = i;
+    vector<vector<int>> merge(vector<vector<int>>& A) {
+        map<int, int> m;
+        for(auto& i : A){
+            int l = i[0], r = i[1], s = i[0], e = i[1];
+            auto it = m.lower_bound(l);
+            while(it!=m.end() && it->S<=r){
+                s = min(s, it->S);
+                e = max(e, it->F);
+                it = m.erase(it);
+            }
+            m[e] = s;
         }
-        intervals.resize(idx+1);
-        return intervals;
+        A.clear();
+        for(auto [r, l] : m) A.push_back({l, r});
+        return A;
     }
 };
