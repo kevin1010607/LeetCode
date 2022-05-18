@@ -1404,7 +1404,7 @@ public:
             else if(v > b2) b2 = v;
         }
         if(a != b) res = n-a1-b1;
-        else res = n-max({a1+b2, a1+a2, b1+a2, b1+b2});
+        else res = n-max({a1+b2, b1+a2});
         return res;
     }
 };
