@@ -15,8 +15,6 @@
 0127 c, unordered_set
 0131 c // 3d vector
 0210 c // queue
-0212 c, cpp // search
-0300 c, cpp // LIS
 0310 c // queue
 0394 c // string
 0721 c // unordered_map, unordered_set
