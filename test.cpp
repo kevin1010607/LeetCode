@@ -2633,3 +2633,120 @@ public:
  * int param_2 = obj->count();
  */
 
+class Solution {
+public:
+    bool digitCount(string num) {
+        int a[10] = {};
+        for(auto c : num) a[c-'0']++;
+        for(int i = 0; i < num.size(); i++){
+            if(a[i] != num[i]-'0') return false;
+        }
+        return true;
+    }
+};
+
+class Solution {
+public:
+    int getWords(string& s){
+        int res = 1;
+        for(auto c :s) if(c == ' ') res++;
+        return res;
+    }
+    string largestWordCount(vector<string>& m, vector<string>& s) {
+        unordered_map<string, int> um;
+        int n = m.size();
+        for(int i = 0; i < n; i++){
+            int num = getWords(m[i]);
+            um[s[i]] += num;
+        }
+        string res = "";
+        int N = -1;
+        for(auto& [u, v]: um){
+            if(v > N) res = u, N = v;
+            else if(v == N && u > res) res = u;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long maximumImportance(int n, vector<vector<int>>& A) {
+        vector<int> cnt(n);
+        for(auto& i : A) cnt[i[0]]++, cnt[i[1]]++;
+        sort(cnt.begin(), cnt.end());
+        long long res = 0;
+        for(int i = 0; i < n; i++){
+            res += cnt[i]*(long long)(i+1);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int rearrangeCharacters(string s, string t) {
+        int a[26] = {}, b[26] = {}, res = INT_MAX;
+        for(auto c : s) a[c-'a']++;
+        for(auto c : t) b[c-'a']++;
+        for(int i = 0; i < 26; i++) if(b[i]!=0) res = min(res, a[i]/b[i]);
+        return res;
+    }
+};
+
+
+#define P pair<int, int>
+#define F first
+#define S second
+class Solution {
+public:
+    int totalSteps(vector<int>& A) {
+        int res = 0, n = A.size();
+        stack<P> s;
+        s.push({A[n-1], 0});
+        for(int i = n-2; i >= 0; i--){
+            int cnt = 0;
+            while(!s.empty() && s.top().F<A[i]){
+                cnt = max(cnt+1, s.top().S);
+                s.pop();
+            }
+            s.push({A[i], cnt});
+            res = max(res, cnt);
+        }
+        return res;
+    }
+};
+
+#define P pair<int, int>
+#define F first
+#define S second
+class Solution {
+private:
+    struct cmp{
+        bool operator()(P a, P b){
+            return a.F > b.F;
+        }  
+    };
+public:
+    int minimumObstacles(vector<vector<int>>& A) {
+        int m = A.size(), n = A[0].size();
+        const int DIR[5] = {-1, 0, 1, 0, -1};
+        vector<int> dist(m*n, INT_MAX);
+        priority_queue<P, vector<P>, cmp> q;
+        q.push({A[0][0], 0});
+        dist[0] = A[0][0];
+        while(!q.empty()){
+            auto [d, idx] = q.top(); q.pop();
+            if(idx == m*n-1) return d;
+            int x = idx/n, y = idx%n;
+            for(int i = 0; i < 4; i++){
+                int nx = x+DIR[i], ny = y+DIR[i+1];
+                if(nx<0||nx>=m||ny<0||ny>=n||dist[nx*n+ny]<=d+A[nx][ny]) continue;
+                dist[nx*n+ny] = d+A[nx][ny];
+                q.push({d+A[nx][ny], nx*n+ny});
+            }
+        }
+        return dist[m*n-1];
+    }
+};
+
