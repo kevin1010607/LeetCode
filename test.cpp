@@ -2750,3 +2750,127 @@ public:
     }
 };
 
+class Solution {
+public:
+    int minMaxGame(vector<int>& A) {
+        if(A.size() == 1) return A[0];
+        vector<int> B;
+        bool flag = true;
+        for(int i = 0; i < A.size(); i += 2){
+            if(flag) B.push_back(min(A[i], A[i+1]));
+            else B.push_back(max(A[i], A[i+1]));
+            flag = !flag;
+        }
+        return minMaxGame(B);
+    }
+};
+
+class Solution {
+public:
+    int partitionArray(vector<int>& A, int k) {
+        sort(A.begin(), A.end());
+        int res = 1, m = A[0];
+        for(int i = 1; i < A.size(); i++){
+            if(A[i]-m > k){
+                m = A[i];
+                res++;
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> arrayChange(vector<int>& A, vector<vector<int>>& O) {
+        unordered_map<int, int> m1, m2;
+        for(auto& i : O){
+            int x = i[0], y = i[1];
+            if(m2.count(x)){
+                int tmp = m2[x];
+                m1[tmp] = y;
+                m2[y] = tmp;
+                if(x != tmp) m2.erase(x);
+            }
+            else m1[x] = y, m2[y] = x;
+        }
+        for(auto& i : A) i = m1.count(i)?m1[i]:i;
+        return A;
+    }
+};
+
+class TextEditor {
+private:
+    struct Node{
+        char c;
+        Node *prev, *next;
+        Node(){}
+        Node(char c, Node *prev, Node *next):c(c),prev(prev),next(next){}
+    };
+    Node *head, *cursor;
+    string getStr() const {
+        string res = "";
+        int t = 10;
+        Node *tmp = cursor;
+        while(t--){
+            if(tmp == head) break;
+            res += tmp->c;
+            tmp = tmp->prev;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+public:
+    TextEditor() {
+        cursor = head = new Node('#', nullptr, nullptr);
+    }
+    
+    void addText(string text) {
+        for(auto i : text){
+            Node *newNode = new Node(i, cursor, cursor->next);
+            if(cursor->next) cursor->next->prev = newNode;
+            cursor->next = newNode;
+            cursor = newNode;
+        }
+    }
+    
+    int deleteText(int k) {
+        int res = 0;
+        while(k--){
+            if(cursor == head) break;
+            if(cursor->next) cursor->next->prev = cursor->prev;
+            if(cursor->prev) cursor->prev->next = cursor->next;
+            Node *tmp = cursor;
+            cursor = cursor->prev;
+            delete tmp;
+            res++;
+        }
+        return res;
+    }
+    
+    string cursorLeft(int k) {
+        while(k--){
+            if(cursor == head) break;
+            cursor = cursor->prev;
+        }
+        return getStr();
+    }
+    
+    string cursorRight(int k) {
+        while(k--){
+            if(!cursor->next) break;
+            cursor = cursor->next;
+        }
+        return getStr();
+    }
+};
+
+/**
+ * Your TextEditor object will be instantiated and called as such:
+ * TextEditor* obj = new TextEditor();
+ * obj->addText(text);
+ * int param_2 = obj->deleteText(k);
+ * string param_3 = obj->cursorLeft(k);
+ * string param_4 = obj->cursorRight(k);
+ */
+
