@@ -2874,3 +2874,279 @@ public:
  * string param_4 = obj->cursorRight(k);
  */
 
+class Solution {
+public:
+    bool strongPasswordCheckerII(string s) {
+        if(s.size() < 8) return false;
+        bool flag = false;
+        for(auto c : s) if(c>='a' && c<='z') flag = true;
+        if(!flag) return false;
+        flag = false;
+        for(auto c : s) if(c>='A' && c<='Z') flag = true;
+        if(!flag) return false;
+        flag = false;
+        for(auto c : s) if(c>='0' && c<='9') flag = true;
+        if(!flag) return false;
+        flag = false;
+        unordered_set<char> us{'!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '+'};
+        for(auto c : s) if(us.count(c)) flag = true;
+        if(!flag) return false;
+        for(int i = 1; i < s.size(); i++) if(s[i] == s[i-1]) return false;
+        return true;
+    }
+};
+
+class Solution {
+public:
+    vector<int> successfulPairs(vector<int>& s, vector<int>& p, long long success) {
+        sort(p.begin(), p.end());
+        for(auto& i : s){
+            long long k = success%i?success/i+1:success/i;
+            auto it = lower_bound(p.begin(), p.end(), k);
+            i = p.size()-(it-p.begin());
+        }
+        return s;
+    }
+};
+
+class Solution {
+public:
+    bool matchReplacement(string s, string sub, vector<vector<char>>& mappings) {
+        int n = s.size(), m = sub.size();
+        unordered_map<char, unordered_set<char>> um;
+        for(auto& i : mappings){
+            um[i[0]].insert(i[1]);
+        }
+        for(int i = 0; i < n-m+1; i++){
+            string now = s.substr(i, m);
+            bool flag = true;
+            for(int j = 0; j < m; j++){
+                if(sub[j]!=now[j] && !um[sub[j]].count(now[j])){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag) return true;
+        }
+        return false;
+    }
+};
+
+class Solution {
+public:
+    long long countSubarrays(vector<int>& A, long long k) {
+        long long res = 0, sum = 0, l = 0, score;
+        for(int i = 0; i < A.size(); i++){
+            sum += A[i];
+            while(sum*(i-l+1) >= k && l <= i) sum -= A[l], l++;
+            if(l <= i) res += (i-l+1);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int countAsterisks(string s) {
+        int res = 0, state = 1;
+        for(auto c : s){
+            if(c == '|') state = !state;
+            else if(state && c == '*') res++; 
+        }
+        return res;
+    }
+};
+
+class Solution {
+private:
+    int dfs(int idx, vector<bool>& used, vector<vector<int>>& graph){
+        int res = 1;
+        used[idx] = true;
+        for(auto i : graph[idx]){
+            if(used[i]) continue;
+            res += dfs(i, used, graph);
+        }
+        return res;
+    }
+public:
+    long long countPairs(int n, vector<vector<int>>& edges) {
+        long long res = 0;
+        vector<vector<int>> graph(n);
+        for(auto& i : edges){
+            graph[i[0]].push_back(i[1]);
+            graph[i[1]].push_back(i[0]);
+        }
+        vector<bool> used(n);
+        for(int i = 0; i < n; i++){
+            if(used[i]) continue;
+            int k = dfs(i, used, graph);
+            res += (long long)k*(n-k);
+        }
+        return res/2;
+    }
+};
+
+class Solution {
+public:
+    int maximumXOR(vector<int>& A) {
+        int res = 0;
+        for(auto i : A) res |= i;
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int distinctSequences(int n) {
+        if(n == 1) return 6;
+        long long dp[10005][7][7] = {}, mod = 1e9+7;
+        dp[2][1][1] = 0, dp[2][1][2] = 1, dp[2][1][3] = 1, dp[2][1][4] = 1, dp[2][1][5] = 1, dp[2][1][6] = 1;
+        dp[2][2][1] = 1, dp[2][2][2] = 0, dp[2][2][3] = 1, dp[2][2][4] = 0, dp[2][2][5] = 1, dp[2][2][6] = 0;
+        dp[2][3][1] = 1, dp[2][3][2] = 1, dp[2][3][3] = 0, dp[2][3][4] = 1, dp[2][3][5] = 1, dp[2][3][6] = 0;
+        dp[2][4][1] = 1, dp[2][4][2] = 0, dp[2][4][3] = 1, dp[2][4][4] = 0, dp[2][4][5] = 1, dp[2][4][6] = 0;
+        dp[2][5][1] = 1, dp[2][5][2] = 1, dp[2][5][3] = 1, dp[2][5][4] = 1, dp[2][5][5] = 0, dp[2][5][6] = 1;
+        dp[2][6][1] = 1, dp[2][6][2] = 0, dp[2][6][3] = 0, dp[2][6][4] = 0, dp[2][6][5] = 1, dp[2][6][6] = 0;
+        for(int i = 3; i <= n; i++){
+            dp[i][1][2] = (dp[i-1][1][1]+dp[i-1][3][1]+dp[i-1][4][1]+dp[i-1][5][1]+dp[i-1][6][1])%mod;
+            dp[i][1][3] = (dp[i-1][1][1]+dp[i-1][2][1]+dp[i-1][4][1]+dp[i-1][5][1]+dp[i-1][6][1])%mod;
+            dp[i][1][4] = (dp[i-1][1][1]+dp[i-1][2][1]+dp[i-1][3][1]+dp[i-1][5][1]+dp[i-1][6][1])%mod;
+            dp[i][1][5] = (dp[i-1][1][1]+dp[i-1][2][1]+dp[i-1][3][1]+dp[i-1][4][1]+dp[i-1][6][1])%mod;
+            dp[i][1][6] = (dp[i-1][1][1]+dp[i-1][2][1]+dp[i-1][3][1]+dp[i-1][4][1]+dp[i-1][5][1])%mod;
+            
+            dp[i][2][1] = (dp[i-1][2][2]+dp[i-1][3][2]+dp[i-1][4][2]+dp[i-1][5][2]+dp[i-1][6][2])%mod;
+            dp[i][2][3] = (dp[i-1][1][2]+dp[i-1][2][2]+dp[i-1][4][2]+dp[i-1][5][2]+dp[i-1][6][2])%mod;
+            dp[i][2][5] = (dp[i-1][1][2]+dp[i-1][2][2]+dp[i-1][3][2]+dp[i-1][4][2]+dp[i-1][6][2])%mod;
+            
+            dp[i][3][1] = (dp[i-1][2][3]+dp[i-1][3][3]+dp[i-1][4][3]+dp[i-1][5][3]+dp[i-1][6][3])%mod;
+            dp[i][3][2] = (dp[i-1][1][3]+dp[i-1][3][3]+dp[i-1][4][3]+dp[i-1][5][3]+dp[i-1][6][3])%mod;
+            dp[i][3][4] = (dp[i-1][1][3]+dp[i-1][2][3]+dp[i-1][3][3]+dp[i-1][5][3]+dp[i-1][6][3])%mod;
+            dp[i][3][5] = (dp[i-1][1][3]+dp[i-1][2][3]+dp[i-1][3][3]+dp[i-1][4][3]+dp[i-1][6][3])%mod;
+                
+            dp[i][4][1] = (dp[i-1][2][4]+dp[i-1][3][4]+dp[i-1][4][4]+dp[i-1][5][4]+dp[i-1][6][4])%mod;
+            dp[i][4][3] = (dp[i-1][1][4]+dp[i-1][2][4]+dp[i-1][4][4]+dp[i-1][5][4]+dp[i-1][6][4])%mod;
+            dp[i][4][5] = (dp[i-1][1][4]+dp[i-1][2][4]+dp[i-1][3][4]+dp[i-1][4][4]+dp[i-1][6][4])%mod;
+            
+            dp[i][5][1] = (dp[i-1][2][5]+dp[i-1][3][5]+dp[i-1][4][5]+dp[i-1][5][5]+dp[i-1][6][5])%mod;
+            dp[i][5][2] = (dp[i-1][1][5]+dp[i-1][3][5]+dp[i-1][4][5]+dp[i-1][5][5]+dp[i-1][6][5])%mod;
+            dp[i][5][3] = (dp[i-1][1][5]+dp[i-1][2][5]+dp[i-1][4][5]+dp[i-1][5][5]+dp[i-1][6][5])%mod;
+            dp[i][5][4] = (dp[i-1][1][5]+dp[i-1][2][5]+dp[i-1][3][5]+dp[i-1][5][5]+dp[i-1][6][5])%mod;
+            dp[i][5][6] = (dp[i-1][1][5]+dp[i-1][2][5]+dp[i-1][3][5]+dp[i-1][4][5]+dp[i-1][5][5])%mod;
+            
+            dp[i][6][1] = (dp[i-1][2][6]+dp[i-1][3][6]+dp[i-1][4][6]+dp[i-1][5][6]+dp[i-1][6][6])%mod;
+            dp[i][6][5] = (dp[i-1][1][6]+dp[i-1][2][6]+dp[i-1][3][6]+dp[i-1][4][6]+dp[i-1][6][6])%mod;
+        }
+        long long res = 0;
+        for(int i = 1; i <= 6; i++){
+            for(int j = 1; j <= 6; j++){
+                res = (res+dp[n][i][j])%mod;
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    bool checkXMatrix(vector<vector<int>>& A) {
+        int n = A.size();
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                if(i-j==0 || i+j==n-1){
+                    if(A[i][j] == 0) return false;
+                }
+                else{
+                    if(A[i][j] != 0) return false;
+                }
+            }
+        }
+        return true;
+    }
+};
+
+class Solution {
+public:
+    int countHousePlacements(int n) {
+        long long res = 0, mod = 1e9+7;
+        vector<vector<long long>> dp(n+1, vector<long long>(4));
+        dp[1][0] = dp[1][1] = dp[1][2] = dp[1][3] = 1;
+        for(int i = 2; i <= n; i++){
+            dp[i][0] = (dp[i-1][0]+dp[i-1][1]+dp[i-1][2]+dp[i-1][3])%mod;
+            dp[i][1] = (dp[i-1][0]+dp[i-1][2])%mod;
+            dp[i][2] = (dp[i-1][0]+dp[i-1][1])%mod;
+            dp[i][3] = dp[i-1][0];
+        }
+        for(auto i : dp[n]){
+            res = (res+i)%mod;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int maximumsSplicedArray(vector<int>& A1, vector<int>& A2) {
+        int s1 = accumulate(A1.begin(), A1.end(), 0);
+        int s2 = accumulate(A2.begin(), A2.end(), 0);
+        int res = max(s1, s2), j = 0, n = A1.size();
+        int p1 = 0, p2 = 0;
+        for(int i = 0; i < n; i++){
+            if(p1-p2 < 0) p1 = p2 = 0;
+            p1 += A1[i], p2 += A2[i];
+            res = max(res, s2-p2+p1);
+        }
+        j = p1 = p2 = 0;
+        for(int i = 0; i < n; i++){
+            if(p2-p1 < 0) p1 = p2 = 0;
+            p1 += A1[i], p2 += A2[i];
+            res = max(res, s1-p1+p2);
+        }
+        return res;
+    }
+};
+
+class Solution {
+private:
+    void dfs(int idx, vector<int>& A, vector<vector<int>>& graph, vector<unordered_set<int>>& child){
+        child[idx].insert(idx);
+        for(auto i : graph[idx]){
+            if(!child[i].empty()) continue;
+            dfs(i, A, graph, child);
+            A[idx] ^= A[i];
+            for(auto j : child[i]) child[idx].insert(j);
+        }
+    }
+public:
+    int minimumScore(vector<int>& A, vector<vector<int>>& edges) {
+        int n = A.size(), res = INT_MAX;
+        vector<vector<int>> graph(n);
+        for(auto& i : edges){
+            graph[i[0]].push_back(i[1]);
+            graph[i[1]].push_back(i[0]);
+        }
+        vector<unordered_set<int>> child(n);
+        dfs(0, A, graph, child);
+        for(int i = 1; i < n; i++){
+            for(int j = i+1; j < n; j++){
+                int s[3];
+                if(child[i].count(j)){
+                    s[0] = A[i]^A[j];
+                    s[1] = A[j];
+                    s[2] = A[0]^A[i];
+                }
+                else if(child[j].count(i)){
+                    s[0] = A[i];
+                    s[1] = A[i]^A[j];
+                    s[2] = A[0]^A[j];
+                }
+                else{
+                    s[0] = A[i];
+                    s[1] = A[j];
+                    s[2] = A[0]^A[i]^A[j];
+                }
+                sort(s, s+3);
+                res = min(res, s[2]-s[0]);
+            }
+        }
+        return res;
+    }
+};
