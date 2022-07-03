@@ -3150,3 +3150,96 @@ public:
         return res;
     }
 };
+
+class Solution {
+public:
+    string decodeMessage(string key, string message) {
+        unordered_map<char, char> m;
+        int cnt = 0;
+        for(auto c : key){
+            if(c!=' ' && !m.count(c)) m[c] = 'a'+cnt++;
+            if(cnt == 26) break;
+        }
+        string res = "";
+        for(auto c : message){
+            if(c == ' ') res += ' ';
+            else res += m[c];
+        }
+        return res;
+    }
+};
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> spiralMatrix(int m, int n, ListNode* head) {
+        vector<vector<int>> res(m, vector<int>(n, -1));
+        int state = 0, cnt = m*n, x = 0, y = 0;
+        while(head && cnt){
+            res[y][x] = head->val;
+            head = head->next;
+            if(state==0 && (x==n-1 || res[y][x+1]!=-1)) state++;
+            else if(state==1 && (y==m-1 || res[y+1][x]!=-1)) state++;
+            else if(state==2 && (x==0 || res[y][x-1]!=-1)) state++;
+            else if(state==3 && (y==0 || res[y-1][x]!=-1)) state = 0;
+            if(state == 0) x++;
+            else if(state == 1) y++;
+            else if(state == 2) x--;
+            else if(state == 3) y--;
+            cnt--;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int peopleAwareOfSecret(int n, int delay, int forget) {
+        long long MOD = 1e9+7, res = 0;
+        vector<vector<long long>> dp(n+1, vector<long long>(forget));
+        dp[1][0] = 1;
+        for(int i = 2; i <= n; i++){
+            for(int j = 1; j < forget; j++)
+                dp[i][j] = dp[i-1][j-1];
+            for(int j = delay-1; j < forget-1; j++)
+                dp[i][0] = (dp[i][0]+dp[i-1][j])%MOD;
+        }
+        for(int i = 0; i < forget; i++)
+            res = (res+dp[n][i])%MOD;
+        return res;
+    }
+};
+
+class Solution {
+private:
+    int m, n, d[5] = {-1, 0, 1, 0, -1}, MOD = 1e9+7;
+    long long dfs(int x, int y, vector<vector<long long>>& dp, vector<vector<int>>& A){
+        long long res = 0;
+        for(int i = 0; i < 4; i++){
+            int nx = x+d[i], ny = y+d[i+1];
+            if(nx<0||nx>=m||ny<0||ny>=n||A[nx][ny]<=A[x][y]) continue;
+            res = (res+(1+(dp[nx][ny]?:dfs(nx, ny, dp, A))))%MOD;
+        }
+        return dp[x][y] = res;
+    }
+public:
+    int countPaths(vector<vector<int>>& A) {
+        m = A.size(), n = A[0].size();
+        long long res = m*n;
+        vector<vector<long long>> dp(m, vector<long long>(n));
+        for(int i = 0; i < m; i++)
+            for(int j = 0; j < n; j++)
+                res = (res+dfs(i, j, dp, A))%MOD;
+        return res;
+    }
+};
+
