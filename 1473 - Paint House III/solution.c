@@ -8,9 +8,9 @@ void cmp(int i, int j, int k, int dp[][101][21], int minN[][101][2], int minIdx[
 }
 int minCost(int* A, int ASz, int** cost, int costSz, int* costColSz, int m, int n, int target){
     int dp[100][101][21], minN[100][101][2], minIdx[100][101];
-    memset(dp, 0x3f, 100*101*21*sizeof(int));
-    memset(minN, 0x3f, 100*101*2*sizeof(int));
-    memset(minIdx, 0x3f, 100*101*sizeof(int));
+    memset(dp, 0x3f, sizeof(dp));
+    memset(minN, 0x3f, sizeof(minN));
+    memset(minIdx, 0x3f, sizeof(minIdx));
     for(int k = 1; k <= n; k++){
         if(A[0] == k) dp[0][1][k] = 0;
         else if(!A[0]) dp[0][1][k] = cost[0][k-1];

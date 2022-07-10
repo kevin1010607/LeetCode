@@ -3243,3 +3243,162 @@ public:
     }
 };
 
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    bool evaluateTree(TreeNode* root) {
+        if(!root->left && !root->right) return root->val;
+        bool l = evaluateTree(root->left);
+        bool r = evaluateTree(root->right);
+        return root->val==2?l||r:l&&r;
+    }
+};
+
+class Solution {
+public:
+    int latestTimeCatchTheBus(vector<int>& A, vector<int>& B, int c) {
+        sort(A.begin(), A.end());
+        sort(B.begin(), B.end());
+        int idx = 0;
+        bool full;
+        for(auto i : A){
+            full = true;
+            for(int j = 0; j < c; j++){
+                if(idx>=B.size() || B[idx]>i){
+                    full = false; 
+                    break;
+                }
+                idx++;
+            }
+        }
+        int res = full?B[idx-1]:A.back();
+        idx--;
+        while(idx>=0 && res==B[idx]) res--, idx--;
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long minSumSquareDiff(vector<int>& A, vector<int>& B, int k1, int k2) {
+        int n = A.size(), k = k1+k2;
+        map<int, int> m;
+        for(int i = 0; i < n; i++) m[abs(A[i]-B[i])]++;
+        while(k){
+            auto it = m.rbegin();
+            if(it->first == 0) return 0;
+            int i = it->first, j = it->second;
+            if(k >= j){
+                m.erase(i);
+                m[i-1] += j;
+                k -= j;
+            }
+            else{
+                m[i] -= k;
+                m[i-1] += k;
+                k -= k;
+            }
+            
+        }
+        long long res = 0;
+        for(auto& [i, v] : m) res += (long long)v*i*i;
+        return res;
+    }
+};
+
+class Solution {
+private:
+    int solve(vector<int>& A, int l, int r, int t){
+        if(l > r) return -1;
+        int mi = *min_element(A.begin()+l, A.begin()+(r+1));
+        double tar = t/(r-l+1);
+        if(mi > tar) return r-l+1;
+        int prev = l;
+        for(int i = l; i <= r; i++){
+            if(A[i] <= tar){
+                int res = solve(A, prev, i-1, t);
+                if(res != -1) return res;
+                prev = i+1;
+            }
+        }
+        if(A[r] > tar) return solve(A, prev, r, t);
+        return -1;
+    }
+public:
+    int validSubarraySize(vector<int>& A, int t) {
+        return solve(A, 0, A.size()-1, t);
+    }
+};
+
+class Solution {
+public:
+    int fillCups(vector<int>& A) {
+        sort(A.begin(), A.end());
+        if(A[0]+A[1] < A[2]) return A[2];
+        else return (A[0]+A[1]+A[2])/2+(A[0]+A[1]+A[2])%2;
+    }
+};
+
+class SmallestInfiniteSet {
+private:
+    set<int> s;
+public:
+    SmallestInfiniteSet() {
+        for(int i = 1; i < 1005; i++) s.insert(i);
+    }
+    
+    int popSmallest() {
+        int res = *s.begin();
+        s.erase(s.begin());
+        return res;
+    }
+    
+    void addBack(int num) {
+        s.insert(num);
+    }
+};
+
+/**
+ * Your SmallestInfiniteSet object will be instantiated and called as such:
+ * SmallestInfiniteSet* obj = new SmallestInfiniteSet();
+ * int param_1 = obj->popSmallest();
+ * obj->addBack(num);
+ */
+
+class Solution {
+public:
+    bool canChange(string s1, string s2) {
+        string r1, r2;
+        for(auto i : s1) if(i != '_') r1 += i;
+        for(auto i : s2) if(i != '_') r2 += i;
+        if(r1 != r2) return false;
+        int n = s1.size(), cnt1 = 0, cnt2 = 0;
+        vector<int> pre1(n), pre2(n);
+        if(s1[0] == 'L') pre1[0]++;
+        if(s1[n-1] == 'R') pre2[n-1]++;
+        for(int i = 1; i < n; i++)
+            pre1[i] = pre1[i-1]+(s1[i]=='L');
+        for(int i = n-2; i >= 0; i--)
+            pre2[i] = pre2[i+1]+(s1[i]=='R');
+        for(int i = 0; i < n; i++){
+            if(s2[i] == 'L') cnt1++;
+            if(pre1[i] > cnt1) return false;
+        }
+        for(int i = n-1; i >= 0; i--){
+            if(s2[i] == 'R') cnt2++;
+            if(pre2[i] > cnt2) return false;
+        }
+        return true;
+    }
+};
+
