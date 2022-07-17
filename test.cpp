@@ -3402,3 +3402,73 @@ public:
     }
 };
 
+class Solution {
+public:
+    vector<int> numberOfPairs(vector<int>& A) {
+        vector<int> res(2);
+        unordered_map<int, int> m;
+        for(auto i : A) m[i]++;
+        for(auto& [i, v] : m){
+            res[0] += v/2;
+            res[1] += v%2;
+        }
+        return res;
+    }
+};
+
+class Solution {
+private:
+    int digit(int n){
+        int res = 0;
+        while(n) res += n%10, n /= 10;
+        return res;
+    }
+public:
+    int maximumSum(vector<int>& A) {
+        int res = -1;
+        vector<priority_queue<int, vector<int>, greater<int>>> v(100);
+        for(auto i : A){
+            int k = digit(i);
+            v[k].push(i);
+            if(v[k].size() > 2) v[k].pop();
+        }
+        for(auto& i : v){
+            if(i.size() < 2) continue;
+            int a = i.top(); i.pop();
+            int b = i.top(); i.pop();
+            res = max(res, a+b);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> smallestTrimmedNumbers(vector<string>& A, vector<vector<int>>& Q) {
+        vector<int> res(Q.size());
+        int m = A.size(), n = A[0].size();
+        for(int i = 0; i < Q.size(); i++){
+            int k = Q[i][0], t = Q[i][1];
+            priority_queue<pair<string, int>> p;
+            for(int j = 0; j < m; j++){
+                p.push({A[j].substr(n-t), j});
+                if(p.size() > k) p.pop();
+            }
+            res[i] = p.top().second;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int minOperations(vector<int>& A, vector<int>& B) {
+        int g = B[0];
+        for(auto i : B) g = gcd(g, i);
+        sort(A.begin(), A.end());
+        for(int i = 0; i < A.size(); i++)
+            if(g%A[i] == 0) return i;
+        return -1;
+    }
+};
+
