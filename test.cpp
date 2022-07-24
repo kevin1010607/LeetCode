@@ -3472,3 +3472,175 @@ public:
     }
 };
 
+class Solution {
+public:
+    string bestHand(vector<int>& A, vector<char>& B) {
+        vector<string> str{"Flush", "Three of a Kind", "Pair", "High Card"};
+        sort(A.begin(), A.end());
+        sort(B.begin(), B.end());
+        int res = 3;
+        if(B[0]==B[1]&&B[1]==B[2]&&B[2]==B[3]&&B[3]==B[4]) res = 0;
+        else if(A[0]==A[1]&&A[1]==A[2]) res = 1;
+        else if(A[1]==A[2]&&A[2]==A[3]) res = 1;
+        else if(A[2]==A[3]&&A[3]==A[4]) res = 1;
+        else if(A[0]==A[1]||A[1]==A[2]||A[2]==A[3]||A[3]==A[4]) res = 2;
+        return str[res];
+    }
+};
+
+class Solution {
+public:
+    long long zeroFilledSubarray(vector<int>& A) {
+        long long res = 0, cnt = 0;
+        for(auto i : A){
+            cnt = i?0:cnt+1;
+            res += cnt;
+        }
+        return res;
+    }
+};
+
+class NumberContainers {
+private:
+    unordered_map<int, int> m;
+    unordered_map<int, set<int>> s;
+public:
+    NumberContainers() {}
+    
+    void change(int index, int number) {
+        if(m.count(index)){
+            s[m[index]].erase(index);
+            if(s[m[index]].size() == 0)
+                s.erase(m[index]);
+        }
+        m[index] = number;
+        s[number].insert(index);
+    }
+    
+    int find(int number) {
+        if(!s.count(number)) return -1;
+        return *s[number].begin();
+    }
+};
+
+/**
+ * Your NumberContainers object will be instantiated and called as such:
+ * NumberContainers* obj = new NumberContainers();
+ * obj->change(index,number);
+ * int param_2 = obj->find(number);
+ */
+
+class Solution {
+public:
+    int shortestSequence(vector<int>& A, int k) {
+        int res = 1;
+        unordered_set<int> s;
+        for(auto i : A){
+            s.insert(i);
+            if(s.size() == k){
+                s.clear();
+                res++;
+            }
+        } 
+        return res;
+    }
+};
+
+class Solution {
+public:
+    char repeatedCharacter(string s) {
+        unordered_set<char> m;
+        for(auto i : s){
+            if(m.count(i)) return i;
+            m.insert(i);
+        }
+        return '\0';
+    }
+};
+
+class Trie{
+private:
+    int n;
+    unordered_map<int, Trie*> m;
+public:
+    Trie():n(0){}
+    void add(vector<int>& A){
+        Trie *now = this;
+        for(auto i : A){
+            if(!now->m.count(i)) now->m[i] = new Trie();
+            now = now->m[i];
+        }
+        now->n++;
+    }
+    int search(vector<int>& A){
+        Trie *now = this;
+        for(auto i : A){
+            if(!now->m.count(i)) return 0;
+            now = now->m[i];
+        }
+        return now->n;
+    }
+};
+class Solution {
+public:
+    int equalPairs(vector<vector<int>>& A) {
+        int res = 0, n = A.size();
+        Trie t;
+        for(auto& i : A) t.add(i);
+        for(int i = 0; i < n; i++){
+            vector<int> tmp(n);
+            for(int j = 0; j < n; j++) tmp[j] = A[j][i];
+            res += t.search(tmp);
+        }
+        return res;
+    }
+};
+
+class FoodRatings {
+private:
+    unordered_map<string, set<pair<int, string>>> m;
+    unordered_map<string, pair<string, int>> info;
+public:
+    FoodRatings(vector<string>& A, vector<string>& B, vector<int>& C) {
+        int n = A.size();
+        for(int i = 0; i < n; i++){
+            m[B[i]].insert({-C[i], A[i]});
+            info[A[i]] = {B[i], -C[i]};
+        }
+    }
+    
+    void changeRating(string food, int newRating) {
+        auto it = info[food];
+        m[it.first].erase({it.second, food});
+        m[it.first].insert({-newRating, food});
+        info[food] = {it.first, -newRating};
+    }
+    
+    string highestRated(string cuisine) {
+        return m[cuisine].begin()->second;
+    }
+};
+
+/**
+ * Your FoodRatings object will be instantiated and called as such:
+ * FoodRatings* obj = new FoodRatings(foods, cuisines, ratings);
+ * obj->changeRating(food,newRating);
+ * string param_2 = obj->highestRated(cuisine);
+ */
+
+class Solution {
+public:
+    long long countExcellentPairs(vector<int>& A, int k) {
+        vector<int> v(32);
+        long long res = 0;
+        for(auto i : unordered_set<int>(A.begin(), A.end())){
+            bitset<32> b(i);
+            v[b.count()]++;
+        }
+        for(int i = 0; i < 32; i++)
+            for(int j = 0; j < 32; j++)
+                if(i+j >= k) res += (long long)v[i]*v[j];
+        return res;
+    }
+};
+
