@@ -3644,3 +3644,70 @@ public:
     }
 };
 
+class Solution {
+public:
+    int minimumOperations(vector<int>& A) {
+        unordered_set<int> s(A.begin(), A.end());
+        return s.count(0)?s.size()-1:s.size();
+    }
+};
+
+class Solution {
+public:
+    int maximumGroups(vector<int>& A) {
+        sort(A.begin(), A.end());
+        int res = 0, prev_sum = 0, prev_num = 0, now_sum = 0, now_num = 0;
+        for(auto i : A){
+            if(now_sum+i>prev_sum && now_num+1>prev_num)
+                res++, prev_sum = now_sum+i, prev_num = now_num+1, now_sum = now_num = 0;
+            else now_sum += i, now_num++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+private:
+    void go(int node, vector<int>& v, vector<int>& s, vector<int>& A){
+        v.push_back(node);
+        s[node] = 0;
+        while(A[v.back()]!=-1 && s[A[v.back()]]==-1){
+            s[A[v.back()]] = v.size();
+            v.push_back(A[v.back()]);
+        }
+    }
+public:
+    int closestMeetingNode(vector<int>& A, int node1, int node2) {
+        int n = A.size(), res = INT_MAX, idx = -1;
+        vector<int> v1, v2, s1(n, -1), s2(n, -1);
+        go(node1, v1, s1, A);
+        go(node2, v2, s2, A);
+        for(int i = 0; i < n; i++){
+            if(s1[i]==-1 || s2[i]==-1) continue;
+            if(max(s1[i],s2[i])<res || max(s1[i],s2[i])==res&&i<idx){
+                res = max(s1[i],s2[i]);
+                idx = i;
+            }
+        }
+        return res==INT_MAX?-1:idx;
+    }
+};
+
+class Solution {
+public:
+    int longestCycle(vector<int>& A) {
+        int n = A.size(), res = -1;
+        unordered_set<int> seen;
+        for(int i = 0; i < n; i++){
+            if(seen.count(i)) continue;
+            unordered_map<int, int> m;
+            m[i] = 0, seen.insert(i);
+            int now = i, cnt = 1;
+            while(A[now]!=-1 && !seen.count(A[now]))
+                now = A[now], m[now] = cnt, seen.insert(now), cnt++;;
+            if(m.count(A[now])) res = max(res, cnt-m[A[now]]);
+        }
+        return res;
+    }
+};
+
