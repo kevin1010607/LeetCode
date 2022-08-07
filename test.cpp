@@ -3711,3 +3711,124 @@ public:
     }
 };
 
+class Solution {
+public:
+    vector<vector<int>> mergeSimilarItems(vector<vector<int>>& A, vector<vector<int>>& B) {
+        map<int, int> m;
+        for(auto& i : A) m[i[0]] += i[1];
+        for(auto& i : B) m[i[0]] += i[1];
+        vector<vector<int>> res;
+        for(auto [i, v] : m)
+            res.push_back({i, v});
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long countBadPairs(vector<int>& A) {
+        unordered_map<int, int> m;
+        long long n = A.size(), res = n*(n-1)/2;
+        for(int i = 0; i < n; i++) m[i-A[i]]++;
+        for(auto [i, v] : m)
+            res -= (long long)v*(v-1)/2;
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long taskSchedulerII(vector<int>& A, int space) {
+        unordered_map<int, long long> m;
+        long long res = 0;
+        for(auto i : A){
+            res++;
+            if(m.count(i) && res-m[i]<=space) 
+                res += (space-(res-m[i]-1));
+            m[i] = res;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    long long minimumReplacement(vector<int>& A) {
+        long long res = 0, n = A.size(), prev = A[n-1];
+        for(int i = n-2; i >= 0; i--){
+            long long k = A[i]/prev-(A[i]%prev==0);
+            res += k;
+            prev = A[i]/(k+1);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int arithmeticTriplets(vector<int>& A, int d) {
+        unordered_set<int> m;
+        int res = 0;
+        for(auto i : A){
+            if(m.count(i-d) && m.count(i-2*d)) res++;
+            m.insert(i);
+        }
+        return res;
+    }
+};
+
+class Solution {
+private:
+    int dfs(int idx, vector<vector<int>>& g, unordered_set<int>& r){
+        r.insert(idx);
+        int res = 1;
+        for(auto i : g[idx]){
+            if(r.count(i)) continue;
+            res += dfs(i, g, r);
+        }
+        return res;
+    }
+public:
+    int reachableNodes(int n, vector<vector<int>>& edges, vector<int>& restricted) {
+        vector<vector<int>> graph(n);
+        for(auto& i : edges){
+            graph[i[0]].push_back(i[1]);
+            graph[i[1]].push_back(i[0]);
+        }
+        unordered_set<int> r(restricted.begin(), restricted.end());
+        return dfs(0, graph, r);
+    }
+};
+
+class Solution {
+public:
+    bool validPartition(vector<int>& A) {
+        int n = A.size();
+        vector<bool> dp(n);
+        if(A[1] == A[0]) dp[1] = true;
+        if(n>=3 && (A[2]==A[1]&&A[1]==A[0] || A[2]==A[1]+1&&A[1]==A[0]+1)) dp[2] = true;
+        for(int i = 3; i < n; i++){
+            if(A[i]==A[i-1] && dp[i-2]) dp[i] = true;
+            if(A[i]==A[i-1] && A[i-1]==A[i-2] && dp[i-3]) dp[i] = true;
+            if(A[i]==A[i-1]+1 && A[i-1]==A[i-2]+1 && dp[i-3]) dp[i] = true;
+        }
+        return dp[n-1];
+    }
+};
+
+class Solution {
+public:
+    int longestIdealString(string s, int k) {
+        vector<int> v(26);
+        for(auto c : s){
+            int id = c-'a', m = 0;
+            for(int i = 0; i < 26; i++){
+                if(abs(i-id) > k) continue;
+                m = max(m, v[i]);
+            }
+            v[id] = max(v[id], m+1);
+        }
+        return *max_element(v.begin(), v.end());
+    }
+};
+
