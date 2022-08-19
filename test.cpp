@@ -3832,3 +3832,106 @@ public:
     }
 };
 
+class Solution {
+public:
+    vector<vector<int>> largestLocal(vector<vector<int>>& A) {
+        int n = A.size();
+        vector<vector<int>> res(n-2, vector<int>(n-2));
+        for(int i = 0; i < n-2; i++){
+            for(int j = 0; j < n-2; j++){
+                for(int a = i; a < i+3; a++){
+                    for(int b = j; b < j+3; b++){
+                        res[i][j] = max(res[i][j], A[a][b]);
+                    }
+                }
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int edgeScore(vector<int>& A) {
+        int n = A.size();
+        vector<long long> S(n);
+        for(int i = 0; i < n; i++)
+            S[A[i]] += i;
+        return max_element(S.begin(), S.end())-S.begin();
+    }
+};
+
+class Solution {
+private:
+    void solve(int idx, string& res, string& tmp, string& s, unordered_set<char>& us){
+        if(us.empty()){
+            if(res=="") res = tmp;
+            else res = min(res, tmp);
+        }
+        unordered_set<char> t(us);
+        for(auto i : t){
+            if(idx!=0 && (s[idx-1]=='I'&&i<tmp[idx-1] || s[idx-1]=='D'&&i>tmp[idx-1])) continue;
+            tmp += i;
+            us.erase(i);
+            solve(idx+1, res, tmp, s, us);
+            us.insert(i);
+            tmp.pop_back();
+        }
+    }
+public:
+    string smallestNumber(string s) {
+        int n = s.size();
+        unordered_set<char> us;
+        for(int i = 1; i <= n+1; i++)
+            us.insert(i+'0');
+        string res, tmp;
+        solve(0, res, tmp, s, us);
+        return res;
+    }
+};
+
+class Solution {
+private:
+    vector<int> digit(int n){
+        vector<int> res;
+        while(n){
+            res.push_back(n%10);
+            n /= 10;
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+    int solve(int idx, int len, vector<int>& d, unordered_set<int>& us, bool equal){
+        if(idx == len) return 1;
+        if(!equal){
+            int p = 1, q = us.size();
+            for(int i = idx; i < len; i++)
+                p *= q, q--;
+            return p;
+        }
+        int res = 0;
+        unordered_set<int> t(us);
+        for(auto i : t){
+            if(i>d[idx] || idx==0&&i==0) continue;
+            us.erase(i);
+            res += solve(idx+1, len, d, us, i==d[idx]);
+            us.insert(i);
+        }
+        return res;
+    }
+public:
+    int countSpecialNumbers(int n) {
+        if(n < 10) return n;
+        vector<int> d = digit(n);
+        int len = d.size(), res = 9, p = 9, q = 9;
+        for(int i = 2; i <= len-1; i++){
+            res += p*q;
+            p *= q, q--;
+        }
+        unordered_set<int> us;
+        for(int i = 0; i <= 9; i++) us.insert(i);
+        res += solve(0, len, d, us, true);
+        return res;
+    }
+};
+
