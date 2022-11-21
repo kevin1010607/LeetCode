@@ -1,4 +1,4 @@
-# Leetcode
+# LeetCode
 
 These problem are on the LeetCode Online Judge.
  - https://leetcode.com/
