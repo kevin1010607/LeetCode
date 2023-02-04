@@ -5487,3 +5487,588 @@ public:
     }
 };
 
+class Solution {
+public:
+    int numberOfCuts(int n) {
+        if(n == 1) return 0;
+        return n%2?n:n/2;
+    }
+};
+
+class Solution {
+public:
+    vector<vector<int>> onesMinusZeros(vector<vector<int>>& A) {
+        int m = A.size(), n = A[0].size();
+        vector<int> R(m), C(n);
+        for(int i = 0; i < m; i++)
+            for(int j = 0; j < n; j++)
+                if(A[i][j] == 1) R[i]++, C[j]++;
+        vector<vector<int>> res(m, vector<int>(n));
+        for(int i = 0; i < m; i++)
+            for(int j = 0; j < n; j++)
+                res[i][j] = R[i]+C[j]-(m-R[i])-(n-C[j]);
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int bestClosingTime(string s) {
+        int n = s.size(), res = 0, p = INT_MAX;
+        vector<int> Y(n), N(n);
+        for(int i = 0; i < n; i++){
+            N[i] = (i?N[i-1]:0)+(s[i]=='N');
+            Y[n-1-i] = (i?Y[n-1-i+1]:0)+(s[n-1-i]=='Y');
+        }
+        for(int i = 0; i <= n; i++){
+            int now = (i?N[i-1]:0)+(i==n?0:Y[i]);
+            if(now < p) res = i, p = now;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int countPalindromes(string s) {
+        int n = s.size(), res = 0, MOD = 1e9+7, N = 1;
+        int dp1[2][10] = {}, dp2[2][10][10] = {}, dp3[2][10][10] = {}, dp4[2][10][10] = {};
+        for(auto i : s){
+            int id = i-'0';
+            for(int j = 0; j < 10; j++){
+                dp1[N][j] = (dp1[N^1][j]+(j==id))%MOD;
+                for(int k = 0; k < 10; k++){
+                    dp2[N][j][k] = (dp2[N^1][j][k]+(k==id?dp1[N^1][j]:0))%MOD;
+                    dp3[N][j][k] = (dp3[N^1][j][k]+dp2[N^1][j][k])%MOD;
+                    dp4[N][j][k] = (dp4[N^1][j][k]+(k==id?dp3[N^1][j][k]:0))%MOD;
+                    res = (res+(j==id?dp4[N^1][j][k]:0))%MOD;
+                }
+            }
+            N ^= 1;
+        }
+        return res;
+    }
+};
+
+
+class Solution {
+public:
+    int pivotInteger(int n) {
+        int sum = n*(n+1)/2, now = 0;
+        for(int i = 1; i <= n; i++){
+            now += i;
+            if(now*2 == sum+i) return i;
+        }
+        return -1;
+    }
+};
+
+class Solution {
+public:
+    int appendCharacters(string s, string t) {
+        int n = t.size(), idx = 0;
+        for(auto i : s){
+            if(i == t[idx]) idx++;
+            if(idx == n) break;
+        }
+        return n-idx;
+    }
+};
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNodes(ListNode* head) {
+        stack<ListNode*> s;
+        while(head){
+            while(!s.empty() && s.top()->val<head->val)
+                s.pop();
+            s.push(head);
+            head = head->next;
+        }
+        head = nullptr;
+        while(!s.empty()){
+            ListNode *tmp = s.top(); s.pop();
+            tmp->next = head;
+            head = tmp;
+        }
+        return head;
+    }
+};
+
+class Solution {
+public:
+    int countSubarrays(vector<int>& A, int k) {
+        int n = A.size(), idx, res = 0;
+        for(int i = 0; i < n; i++)
+            if(A[i] == k) {idx = i; break;}
+        vector<int> L(idx+1), R(n-idx);
+        for(int i = 1; i < idx+1; i++)
+            L[i] = L[i-1]+(A[idx-i]>k)-(A[idx-i]<k);
+        for(int i = 1; i < n-idx; i++)
+            R[i] = R[i-1]+(A[idx+i]>k)-(A[idx+i]<k);
+        unordered_map<int, int> m;
+        for(auto i : L) m[i]++;
+        for(auto i : R){
+            if(m.count(1-i)) res += m[1-i];
+            if(m.count(-i)) res += m[-i];
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    bool isCircularSentence(string s) {
+        int n = s.size();
+        if(s[0] != s[n-1]) return false;
+        for(int i = 1; i < n-1; i++){
+            if(s[i]==' ' && s[i-1]!=s[i+1])
+                return false;
+        }
+        return true;
+    }
+};
+
+#define ll long long
+class Solution {
+public:
+    long long dividePlayers(vector<int>& A) {
+        int s = accumulate(A.begin(), A.end(), 0), n = A.size();
+        if(s%(n/2)) return -1;
+        int t = s/(n/2);
+        sort(A.begin(), A.end());
+        int l = 0, r = n-1;
+        ll res = 0;
+        while(l < r){
+            if(A[l]+A[r] != t) return -1;
+            res += (ll)A[l++]*A[r--];
+        }
+        return res;
+    }
+};
+
+#define pii pair<int, int>
+#define F first
+#define S second
+class Solution {
+private:
+    int dfs(int idx, vector<vector<pii>>& G, vector<bool>& seen){
+        int res = INT_MAX;
+        seen[idx] = true;
+        for(auto [i, v] : G[idx]){
+            res = min(res, v);
+            if(seen[i]) continue;
+            res = min(res, dfs(i, G, seen));
+        }
+        return res;
+    }
+public:
+    int minScore(int n, vector<vector<int>>& roads) {
+        vector<vector<pii>> G(n);
+        for(auto& i : roads){
+            G[i[0]-1].push_back({i[1]-1, i[2]});
+            G[i[1]-1].push_back({i[0]-1, i[2]});
+        }
+        vector<bool> seen(n);
+        return dfs(0, G, seen);
+    }
+};
+
+class Solution {
+public:
+    int magnificentSets(int n, vector<vector<int>>& edges) {
+        vector<vector<int>> G(n);
+        for(auto& i : edges){
+            G[i[0]-1].push_back(i[1]-1);
+            G[i[1]-1].push_back(i[0]-1);
+        }
+        vector<int> res(n);
+        for(int i = 0; i < n; i++){
+            int idx = i, m = 0;
+            vector<int> dis(n, -1);
+            dis[i] = 0;
+            queue<int> q;
+            q.push(i);
+            while(!q.empty()){
+                int now = q.front(); q.pop();
+                for(auto j : G[now]){
+                    if(dis[j] == -1){
+                        dis[j] = dis[now]+1;
+                        idx = min(idx, j);
+                        m = max(m, dis[j]);
+                        q.push(j);
+                    }
+                    else if(dis[j]%2 != (dis[now]+1)%2)
+                        return -1;
+                }
+            }
+            res[idx] = max(res[idx], m+1);
+        }
+        return accumulate(res.begin(), res.end(), 0);
+    }
+};
+
+class Solution {
+public:
+    int maximumValue(vector<string>& A) {
+        int res = 0;
+        for(auto& s : A){
+            int now = 0;
+            for(auto i : s){
+                if(isdigit(i)) now = 10*now+(i-'0');
+                else {now = -1; break;}
+            }
+            if(now == -1) res = max(res, (int)s.size());
+            else res = max(res, now);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int maxStarSum(vector<int>& V, vector<vector<int>>& E, int k) {
+        int n = V.size(), res = INT_MIN;
+        vector<priority_queue<int, vector<int>, greater<int>>> P(n);
+        for(auto& i : E){
+            int a = i[0], b = i[1];
+            P[a].push(V[b]);
+            if(P[a].size() > k) P[a].pop();
+            P[b].push(V[a]);
+            if(P[b].size() > k) P[b].pop();
+        }
+        for(int i = 0; i < n; i++){
+            int now = V[i];
+            while(!P[i].empty()){
+                int c = P[i].top(); P[i].pop();
+                now += max(0, c);
+            }
+            res = max(res, now);
+        }
+        return res;
+    }
+};
+
+class Solution {
+private:
+    bool check(int mid, vector<int>& A){
+        int n = A.size(), idx = 0;
+        vector<bool> F(n);
+        F[0] = true, F[n-1] = true;
+        for(int i = 1; i < n; i++){
+            if(A[i]-A[idx] <= mid) continue;
+            if(idx+1 == i) return false;
+            F[i-1] = true, idx = i-1, i--;
+        }
+        int pre = 0;
+        for(int i = 1; i < n; i++){
+            if(!F[i] || i==n-1){
+                if(A[i]-pre > mid) return false;
+                pre = A[i];
+            }
+        }
+        return true;
+    }
+public:
+    int maxJump(vector<int>& A) {
+        int l = 0, r = A.back();
+        while(l <= r){
+            int mid  = l+(r-l)/2;
+            if(check(mid, A)) r = mid-1;
+            else l = mid+1;
+        }
+        return l;
+    }
+};
+
+class Solution {
+public:
+    int similarPairs(vector<string>& A) {
+        unordered_map<int, int> m;
+        for(auto& i : A){
+            int now = 0;
+            for(auto j : i)
+                now |= 1<<(j-'a');
+            m[now]++;
+        }
+        int res = 0;
+        for(auto [i, v] : m)
+            res += v*(v-1)/2;
+        return res;
+    }
+};
+
+class Solution {
+private:
+    int sumPrime(int n){
+        int sum = 0;
+        while(n%2 == 0) n /= 2, sum += 2;
+        for(int i = 3; i*i <= n; i += 2)
+            while (n%i == 0) n /= i, sum += i;
+        if(n > 1) sum += n;
+        return sum;
+    }
+public:
+    int smallestValue(int n) {
+        while(true){
+            int p = sumPrime(n);
+            if(p >= n) return n;
+            n = p;
+        }
+        return -1;
+    }
+};
+
+class Solution {
+private:
+    bool check(int a, int b, int n, vector<unordered_set<int>>& G){
+        vector<bool> seen(n);
+        seen[a] = seen[b] = true;
+        for(auto i : G[a]) seen[i] = true;
+        for(auto i : G[b]) seen[i] = true;
+        for(int i = 0; i < n; i++)
+            if(!seen[i]) return true;
+        return false;
+    }
+public:
+    bool isPossible(int n, vector<vector<int>>& edges) {
+        vector<int> in(n);
+        vector<unordered_set<int>> G(n);
+        for(auto& i : edges){
+            in[i[0]-1]++, in[i[1]-1]++;
+            G[i[0]-1].insert(i[1]-1);
+            G[i[1]-1].insert(i[0]-1);
+        }
+        vector<int> v;
+        for(int i = 0; i < n; i++)
+            if(in[i]%2) v.push_back(i);
+        if(v.size() == 0) return true;
+        else if(v.size() == 2){
+            if(!G[v[0]].count(v[1]) || check(v[0], v[1], n, G)) return true;
+        }
+        else if(v.size() == 4){
+            int a = v[0], b = v[1], c = v[2], d = v[3];
+            if(!G[a].count(b) && !G[c].count(d)) return true;
+            if(!G[a].count(c) && !G[b].count(d)) return true;
+            if(!G[a].count(d) && !G[b].count(c)) return true;
+        }
+        return false;
+    }
+};
+
+class Solution {
+private:
+    int depth(int n){
+        int res = 0;
+        while(n != 1) n /= 2, res++;
+        return res;
+    }
+public:
+    vector<int> cycleLengthQueries(int n, vector<vector<int>>& Q) {
+        vector<int> res(Q.size());
+        for(int i = 0; i < Q.size(); i++){
+            int a = Q[i][0], b = Q[i][1];
+            int da = depth(a), db = depth(b), cnt = 0;
+            while(da > db) a /= 2, da--, cnt++;
+            while(db > da) b /= 2, db--, cnt++;
+            while(a != b) a /= 2, b /= 2, cnt += 2;
+            res[i] = cnt+1;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int captureForts(vector<int>& A) {
+        int n = A.size(), res = 0;
+        for(int i = 0; i < n; i++){
+            if(A[i] != 1) continue;
+            int p = i!=0?i-1:0;
+            while(p>0 && A[p]==0) p--;
+            if(A[p] == -1) res = max(res, i-p-1);
+            p = i!=n-1?i+1:0;
+            while(p<n-1 && A[p]==0) p++;
+            if(A[p] == -1) res = max(res, p-i-1);
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> topStudents(vector<string>& P, vector<string>& N, vector<string>& R, vector<int>& ID, int k) {
+        int n = R.size();
+        unordered_set<string> PP(P.begin(), P.end()), NN(N.begin(), N.end());
+        priority_queue<pair<int, int>> q;
+        for(int i = 0; i < n; i++){
+            R[i] += " ";
+            int idx = 0, p = 0;
+            for(int j = 0; j < R[i].size(); j++){
+                if(R[i][j] == ' '){
+                    string s = R[i].substr(idx, j-idx);
+                    if(PP.count(s)) p += 3;
+                    if(NN.count(s)) p -= 1;
+                    idx = j+1;
+                }
+            }
+            q.push({-p, ID[i]});
+            if(q.size() > k) q.pop();
+        }
+        vector<int> res(k);
+        for(int i = k-1; i >= 0; i--){
+            res[i] = q.top().second;
+            q.pop();
+        }
+        return res;
+    }
+};
+
+#define ll long long
+class Solution {
+private:
+    bool check(int d1, int d2, int c1, int c2, ll g, int val){
+        ll t1 = val/d1, t2 = val/d2, t3 = val/g, t4 = t1+t2-t3;
+        return (val-t1)>=c1 && (val-t2)>=c2 && ((val-t1)+(val-t2)-(val-t4))>=c1+c2;
+    }
+public:
+    int minimizeSet(int d1, int d2, int c1, int c2) {
+        ll g = (ll)d1*d2/gcd(d1, d2), l = 1, r = INT_MAX;
+        while(l <= r){
+            int mid = l+(r-l)/2;
+            if(check(d1, d2, c1, c2, g, mid)) r = mid-1;
+            else l = mid+1;
+        }
+        return l;
+    }
+};
+
+#define ll long long
+class Solution {
+private:
+    ll MOD = 1e9+7;
+    ll pow(ll a, ll b, ll MOD){
+        ll res = 1;
+        while(b){
+            if(b&1) res = (res*a)%MOD;
+            b >>= 1;
+            a = (a*a)%MOD;
+        }
+        return res;
+    }
+public:
+    int countAnagrams(string s) {
+        s += " ";
+        ll n = s.size(), res = 1, idx = 0;
+        vector<ll> F(n+1), P(n+1, -1);
+        F[0] = F[1] = P[0] = P[1] = 1;
+        for(int i = 2; i <= n; i++)
+            F[i] = (F[i-1]*i)%MOD;
+        vector<int> cnt(26);
+        for(int i = 0; i < n; i++){
+            if(s[i] == ' '){
+                ll p = F[i-idx];
+                for(int j = 0; j < 26; j++){
+                    if(P[cnt[j]] == -1) P[cnt[j]] = pow(F[cnt[j]], MOD-2, MOD);
+                    p = (p*P[cnt[j]])%MOD;
+                    cnt[j] = 0;
+                }
+                res = (res*p)%MOD;
+                idx = i+1;
+            }
+            else cnt[s[i]-'a']++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int countDigits(int num) {
+        int t = num, res = 0;
+        vector<int> A;
+        while(t) A.push_back(t%10), t /= 10;
+        for(auto i : A) if(num%i == 0) res++;
+        return res;
+    }
+};
+
+class Solution {
+public:
+    int distinctPrimeFactors(vector<int>& A) {
+        int m = *max_element(A.begin(), A.end());
+        vector<int> prime;
+        vector<bool> is_prime(m+1, true);
+        is_prime[0] = is_prime[1] = false;
+        for(int i = 2; i <= m; i++){
+            if(is_prime[i])
+                prime.push_back(i);
+            for(auto j : prime){
+                if(i*j > m) break;
+                is_prime[i*j] = false;
+                if(i%j == 0) break;
+            }
+        }
+        unordered_set<int> s;
+        for(auto i : A){
+            for(auto j : prime){
+                if(j > i) break;
+                if(i%j == 0) s.insert(j);
+            }
+        }
+        return s.size();
+    }
+};
+
+class Solution {
+public:
+    int minimumPartition(string s, int k) {
+        int n = s.size(), idx = 0, res = 0;
+        while(idx < n){
+            long long t = 0;
+            if((s[idx]-'0') > k) return -1;
+            while(idx<n && 10*t+(s[idx]-'0')<=k)
+                t = 10*t+(s[idx]-'0'), idx++;
+            res++;
+        }
+        return res;
+    }
+};
+
+class Solution {
+public:
+    vector<int> closestPrimes(int left, int right) {
+        int m = right;
+        vector<int> prime;
+        vector<bool> is_prime(m+1, true);
+        is_prime[0] = is_prime[1] = false;
+        for(int i = 2; i <= m; i++){
+            if(is_prime[i])
+                prime.push_back(i);
+            for(auto j : prime){
+                if(i*j > m) break;
+                is_prime[i*j] = false;
+                if(i%j == 0) break;
+            }
+        }
+        int M = INT_MAX;
+        vector<int> res(2, -1);
+        int idx = lower_bound(prime.begin(), prime.end(), left)-prime.begin();
+        for(int i = idx+1; i < prime.size(); i++){
+            if(prime[i]-prime[i-1] < M) 
+                M = prime[i]-prime[i-1], res[0] = prime[i-1], res[1] = prime[i];
+        }
+        return res;
+    }
+};
+
